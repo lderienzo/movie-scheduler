@@ -2,16 +2,16 @@ package com.tandem.showtime.moviescheduler;
 
 import org.junit.Test;
 
-public class Tests {
+public class TestMovieShowingScheduler {
     @Test
-    public void testMovieScheduleGenerator() {
+    public void testSomething() {
         //Your system should be able to take in the details of
         // each movie and output a start and end time of each
         // showing that abides by all of the provided rules.
 
         // read movie details
         // -- read in movie name, Rating, and duration
-        // -- output shcedule for showing times For Weekdays and Weekends
+        // -- output schedule for showing times For Weekdays and Weekends
 
         // method: generateScheduleForMovie();
 

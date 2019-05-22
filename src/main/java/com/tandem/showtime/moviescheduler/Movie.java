@@ -1,10 +1,21 @@
 package com.tandem.showtime.moviescheduler;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Movie {
-    private int length;
+    private String title;
+    private String rating;
+    private String length; // TODO: should we rename this to "runningTime"?
     private String titleWithRating;
 
-    public Movie(String movieInfoString) {
+    @JsonCreator
+    public Movie(@JsonProperty("title") String title,
+                 @JsonProperty("rating") String rating,
+                 @JsonProperty("length") String length) {
+        this.title = title;
+        this.rating = rating;
+        this.length = length;
         extractMovieLengthFromInfoString();
         extractMovieTitleWithRatingFromInfoString();
     }
@@ -17,7 +28,7 @@ public class Movie {
         return "";
     }
 
-    public int length() {
+    public String length() {
         return length;
     }
 
