@@ -1,27 +1,16 @@
 package com.tandem.showtime.moviescheduler;
 
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
-public class MovieShowingScheduler implements CommandLineRunner {
+@Service
+public class MovieSchedulerService {
+
     private static final int TIME_REQUIRED_FOR_PREVIEWS = 15;
     private static final int TIME_REQUIRED_FOR_THEATRE_PREP = 20;
 
 
-    @Override
-    public void run(String... args) throws Exception {
-
-    }
-
-    public static void main(String[] args) {
-        MovieShowingScheduler movieShowingScheduler = new MovieShowingScheduler(args);
-    }
-
-    public MovieShowingScheduler(String[] args) {
-        // TODO read args filepath to movies.json file and read in and perhaps use jacksonmapper to map to Movies and Movie objects?
-        // Movies movies = getMoviesFromJsonFile();
-//        Movies movies = new Movies("mvies json string");
+    public MovieSchedulerService() {
+        int temp = 0;
     }
 
     private Schedule determineMovieScheduleForWeekdayShows(Movies movies, HoursOfOperation hoursOfOperation) {

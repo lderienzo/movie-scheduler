@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 public class Movies {
-    private List<Movie> movieList; // TODO: make immutable after construction?
+    private List<Movie> movieList; // TODO: make immutable after construction? Also rename to "showings", or "whatsplaying", or just "playing"
 
     @JsonCreator
     public Movies (@JsonProperty("movieList") List<Movie> movieList) {

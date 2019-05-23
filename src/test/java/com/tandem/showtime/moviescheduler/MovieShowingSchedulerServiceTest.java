@@ -1,10 +1,29 @@
 package com.tandem.showtime.moviescheduler;
 
-import org.junit.Test;
+import static org.assertj.core.api.Java6Assertions.assertThat;
 
-public class TestMovieShowingScheduler {
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class MovieShowingSchedulerServiceTest {
+
+    @Autowired
+    private MovieSchedulerService movieSchedulerService;
+
+
     @Test
-    public void testSomething() {
+    public void testMovieShowingSchedulerWasInjected() {
+        assertThat(movieSchedulerService).isNotNull();
+    }
+
+
+    @Test
+    public void testRun() {
         //Your system should be able to take in the details of
         // each movie and output a start and end time of each
         // showing that abides by all of the provided rules.

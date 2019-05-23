@@ -1,16 +1,21 @@
 package com.tandem.showtime.moviescheduler;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ApplicationTests {
+class MovieSchedulerServiceTest {
 
-	@Test
-	public void contextLoads() {
-	}
+    @BeforeEach
+    void setUp() {
+    }
 
+    @AfterEach
+    void tearDown() {
+    }
 }
