@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Movie {
+
     private String title;
     private String rating;
     private String length; // TODO: should we rename this to "runningTime"?
-    private String titleWithRating;
+    private String titleWithRatingForSchedule;
+
 
     @JsonCreator
     public Movie(@JsonProperty("title") String title,
@@ -32,7 +34,7 @@ public class Movie {
         return length;
     }
 
-    public String getTitleWithRating() {
-        return titleWithRating;
+    public String titleWithRatingForSchedule() {
+        return titleWithRatingForSchedule;
     }
 }

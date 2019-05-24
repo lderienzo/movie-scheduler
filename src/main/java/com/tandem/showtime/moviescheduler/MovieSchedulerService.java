@@ -8,11 +8,6 @@ public class MovieSchedulerService {
     private static final int TIME_REQUIRED_FOR_PREVIEWS = 15;
     private static final int TIME_REQUIRED_FOR_THEATRE_PREP = 20;
 
-
-    public MovieSchedulerService() {
-        int temp = 0;
-    }
-
     private Schedule determineMovieScheduleForWeekdayShows(Movies movies, HoursOfOperation hoursOfOperation) {
         WeekdayHours weekdayHours = hoursOfOperation.getWeekdayHours();
         int startTimeForWeekdayShows = weekdayHours.getStartTimeForWeekdayShows();
@@ -46,7 +41,7 @@ public class MovieSchedulerService {
         return closingTime;
     }
 
-    // Create WeekdayHours Class
+    // Create Weekday Class
     private int determineClosingTimeForWeekdays(WeekdayHours weekdayHours) {
         return weekdayHours.getClosingTime();
     }
