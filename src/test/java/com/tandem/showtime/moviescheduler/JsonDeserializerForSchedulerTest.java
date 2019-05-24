@@ -17,7 +17,7 @@ public class JsonDeserializerForSchedulerTest {
 
         // then
         assertThat(deserializedMovies).isNotNull();
-        List<Movie> movieList = deserializedMovies.get();
+        List<Movie> movieList = deserializedMovies.playing();
         assertThat(movieList.toArray()).hasSize(4);
     }
 }

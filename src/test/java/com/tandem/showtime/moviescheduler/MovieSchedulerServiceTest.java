@@ -3,6 +3,7 @@ package com.tandem.showtime.moviescheduler;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.jupiter.api.*;
 import org.junit.runner.RunWith;
@@ -26,11 +27,13 @@ public class MovieSchedulerServiceTest {
     void tearDown() {
     }
 
+    @Ignore
     @Test
     public void testMovieShowingSchedulerWasInjected() {
         assertThat(movieSchedulerService).isNotNull();
     }
 
+    @Ignore
     @Test
     public void testRun() {
         //Your system should be able to take in the details of

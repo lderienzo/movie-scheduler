@@ -15,7 +15,7 @@ public class MovieSchedulerService {
         int currentTime = verylastShowingEndTime;
         Schedule schedule = new Schedule(5);
 
-        for (Movie movie : movies.get()) {	// for each movie in list
+        for (Movie movie : movies.playing()) {	// for each movie in list
             while (true) { 	// find optimal beginning and end times (given constraints)
                 Showing showing = new Showing();
                 int lastShowingEndingTime = determineLastShowingEndingTime(currentTime);

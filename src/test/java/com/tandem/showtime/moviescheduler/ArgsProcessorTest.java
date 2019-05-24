@@ -7,11 +7,8 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.ApplicationArguments;
 
@@ -55,9 +52,9 @@ public class ArgsProcessorTest {
         // then
         Movies movies = argsProcessor.getMovies();
         assertThat(movies).isNotNull();
-        assertThat(movies.get()).isNotNull();
-        assertThat(movies.get().size()).isEqualTo(1);
-        assertThat(movies.get().get(0).length()).isEqualTo("136 minutes");
+        assertThat(movies.playing()).isNotNull();
+        assertThat(movies.playing().size()).isEqualTo(1);
+        assertThat(movies.playing().get(0).length()).isEqualTo("136 minutes");
     }
 
 }
