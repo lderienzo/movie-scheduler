@@ -14,6 +14,8 @@ public class Hours {
         this.weekend = weekend;
     }
 
+    public Hours(){}
+
     public Weekday weekday() {
         return weekday;
     }

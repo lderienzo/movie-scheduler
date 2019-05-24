@@ -14,6 +14,8 @@ public class Movies {
         this.movieList = movieList;
     }
 
+    public Movies() {}
+
     public List<Movie> get() {
         return movieList;
     }
