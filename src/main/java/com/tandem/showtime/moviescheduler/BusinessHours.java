@@ -115,7 +115,7 @@ public class BusinessHours extends RuntimeException {
         return closingLocalTime;
     }
 
-    public LocalTime startTimeForWeekdayShows() {
+    public LocalTime startTimeForAllShowings() {
         return openingLocalTime.plusMinutes(MINUTES_REQURIED_TILL_FIRST_SHOWING);
     }
 }

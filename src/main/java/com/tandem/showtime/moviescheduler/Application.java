@@ -2,7 +2,6 @@ package com.tandem.showtime.moviescheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -36,7 +35,7 @@ public class Application implements ApplicationRunner {
 		Movies movies = argsProcessor.getMovies();
 
 		movieSchedulerService = new MovieSchedulerService(hours, movies);
-		movieSchedulerService.determineMovieScheduleForWeekdayShows();
+		movieSchedulerService.determineMovieScheduleForWeekdayShowings();
 
 		LOG.info("*** END RUNNING APP ***");
 	}

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.ImmutableList;
 
 
 public class Movies {
@@ -17,6 +18,6 @@ public class Movies {
     public Movies() {}
 
     public List<Movie> playing() {
-        return playing;
+        return ImmutableList.copyOf(playing);
     }
 }

@@ -6,12 +6,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Hours {
 
     private WeekdayHours weekdayHours;
-    private Weekend weekend;    // TODO: rename to "WeekendHours" and in JSON too.
+    private WeekendHours weekendHours;    // TODO: rename to "WeekendHours" and in JSON too.
 
     @JsonCreator
-    public Hours(@JsonProperty("weekdayHours") WeekdayHours weekday, @JsonProperty("weekend") Weekend weekend) {
+    public Hours(@JsonProperty("weekdayHours") WeekdayHours weekday, @JsonProperty("weekendHours") WeekendHours weekendHours) {
         this.weekdayHours = weekday;
-        this.weekend = weekend;
+        this.weekendHours = weekendHours;
     }
 
     public Hours(){}
@@ -20,8 +20,8 @@ public class Hours {
         return weekdayHours;
     }
 
-    public Weekend weekend() {
-        return weekend;
+    public WeekendHours weekend() {
+        return weekendHours;
     }
 }
 

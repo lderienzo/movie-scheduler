@@ -3,7 +3,7 @@
     "days": "Monday - Thursday",
     "hours": "11am–11pm"
   },
-  "weekend": {
+  "weekendHours": {
     "days": "Friday - Sunday",
     "hours": "10:30 am–12 am"
   }

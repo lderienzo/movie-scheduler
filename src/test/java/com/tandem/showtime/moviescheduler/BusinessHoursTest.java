@@ -80,7 +80,7 @@ public class BusinessHoursTest {
         businessHours = new BusinessHours(WEEKDAY_DAYS, WEEKDAY_HOURS);
 
         // when
-        LocalTime startTimeforWeekdayShows = businessHours.startTimeForWeekdayShows();
+        LocalTime startTimeforWeekdayShows = businessHours.startTimeForAllShowings();
 
         // then
         assertThat(startTimeforWeekdayShows).isEqualTo(new LocalTime(11,15));
@@ -93,7 +93,7 @@ public class BusinessHoursTest {
         businessHours = new BusinessHours(WEEKEND_DAYS, WEEKEND_HOURS);
 
         // when
-        LocalTime startTimeforWeekdayShows = businessHours.startTimeForWeekdayShows();
+        LocalTime startTimeforWeekdayShows = businessHours.startTimeForAllShowings();
 
         // then
         assertThat(startTimeforWeekdayShows).isEqualTo(new LocalTime(10,45));

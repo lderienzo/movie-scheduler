@@ -12,38 +12,91 @@ public class MovieSchedulerService {
     private Hours hours;
     private Movies movies;
     private WeekdayHours weekdayHours;
+    private WeekendHours weekendHours;
     private LocalTime currentTime;
-    private LocalTime closingTime;
-    private LocalTime startTimeForWeekdayShows;
-    private LocalTime whenLastWeekdayShowCanEnd;
+    private LocalTime weekdayClosingTime;
+    private LocalTime weekendClosingTime;
+    private LocalTime startTimeForWeekdayShowings;
+    private LocalTime whenLastWeekdayShowingCanEnd;
+    private LocalTime startTimeForWeekendShowings;
+    private LocalTime whenLastWeekendShowingCanEnd;
     private Schedule schedule;
 
     public MovieSchedulerService(Hours theatreHours, Movies moviesPlaying) {
+        setArgs(theatreHours, moviesPlaying);
+        initializeSchedule();
+        setWeekdayHours(theatreHours);
+        setWeekendHours(theatreHours);
+        determineStartTimeForWeekdayShowings();
+        determineWhenLastWeekdayShowingCanEnd();
+        determineStartTimeForWeekendShowings();
+        determineWhenLastWeekendShowingCanEnd();
+    }
+
+    private void setArgs(Hours theatreHours, Movies moviesPlaying) {
         hours = theatreHours;
         movies = moviesPlaying;
-        weekdayHours = hours.weekday();
+    }
+
+    private void initializeSchedule() {
         schedule = new Schedule(forNumberOfMoviesPlaying());
-        startTimeForWeekdayShows = determineStartTimeForWeekdayShows();
-        whenLastWeekdayShowCanEnd = determineWhenLastWeekdayShowCanEnd();
     }
 
     private int forNumberOfMoviesPlaying() {
         return movies.playing().size();
     }
 
-    public Schedule determineMovieScheduleForWeekdayShows() {
+    private void setWeekdayHours(Hours hours) {
+        weekdayHours = hours.weekday();
+    }
+
+    private void setWeekendHours(Hours hours) {
+        weekendHours = hours.weekend();
+    }
+
+    private void determineStartTimeForWeekdayShowings() {
+        startTimeForWeekdayShowings = weekdayHours.startTimeForAllShowings();
+    }
+
+    private void determineWhenLastWeekdayShowingCanEnd() {
+        weekdayClosingTime = determineClosingTimeForWeekdays();
+        whenLastWeekdayShowingCanEnd = weekdayClosingTime;
+    }
+
+    private LocalTime determineClosingTimeForWeekdays() {
+        return weekdayHours.closing();
+    }
+
+    private void determineStartTimeForWeekendShowings() {
+        startTimeForWeekendShowings = weekendHours.startTimeForAllShowings();
+    }
+
+    private void determineWhenLastWeekendShowingCanEnd() {
+        weekendClosingTime = determineClosingTimeForWeekends();
+        whenLastWeekendShowingCanEnd = weekendClosingTime;
+    }
+
+    private LocalTime determineClosingTimeForWeekends() {
+        return weekendHours.closing();
+    }
+
+    public Schedule determineMovieScheduleForWeekdayShowings() {
+        return determineMovieScheduleForShowings(whenLastWeekdayShowingCanEnd, startTimeForWeekdayShowings, weekdayClosingTime);
+    }
+
+    private Schedule determineMovieScheduleForShowings(LocalTime whenLastShowingCanEnd, LocalTime startTimeForAllShowings, LocalTime closingTime) {
 
         for (Movie movie : movies.playing()) {
 
-            currentTime = whenLastWeekdayShowCanEnd;
+            currentTime = whenLastShowingCanEnd;
 
             while (true) {
 
-                LocalTime showingEndingTime = determineShowingEndingTime();
+                LocalTime showingEndingTime = determineShowingEndingTime(closingTime);
 
                 LocalTime latestTimeShowingCanStart = determineLatestTimeShowingCanStart(movie, showingEndingTime);
 
-                if (latestTimeShowCanStartIsBeforeStartTimeForWeekdayShows(latestTimeShowingCanStart)) {
+                if (latestTimeShowCanStartIsBeforeStartTimeForWeekdayShowings(latestTimeShowingCanStart, startTimeForAllShowings)) {
                     break;
                 }
 
@@ -63,26 +116,13 @@ public class MovieSchedulerService {
         return schedule;
     }
 
-    private boolean latestTimeShowCanStartIsBeforeStartTimeForWeekdayShows
-            (LocalTime latestTimeLastShowingCanStart) {
-        return latestTimeLastShowingCanStart.compareTo(startTimeForWeekdayShows) < 0;
+    private boolean latestTimeShowCanStartIsBeforeStartTimeForWeekdayShowings
+            (LocalTime latestTimeLastShowingCanStart, LocalTime startTimeForAllShowings) {
+        return latestTimeLastShowingCanStart.compareTo(startTimeForAllShowings) < 0;
     }
 
-    private LocalTime determineStartTimeForWeekdayShows() {
-        return weekdayHours.startTimeForWeekdayShows();
-    }
-
-    private LocalTime determineWhenLastWeekdayShowCanEnd() {
-        closingTime = determineClosingTimeForWeekdays();
-        return closingTime;
-    }
-
-    private LocalTime determineClosingTimeForWeekdays() {
-        return weekdayHours.closing();
-    }
-
-    private LocalTime determineShowingEndingTime() {    // TODO: must write version for weekend
-        if (currentTime.getHourOfDay() == closingTime.getHourOfDay()) // 11PM
+    private LocalTime determineShowingEndingTime(LocalTime closingTime) {
+        if (currentTime.getHourOfDay() == closingTime.getHourOfDay())
             return currentTime;
         else
             return currentTime.minusMinutes(TIME_REQUIRED_FOR_THEATRE_PREP);
@@ -109,8 +149,7 @@ public class MovieSchedulerService {
         return scheduledShowingStartTime.minusMinutes(TIME_REQUIRED_FOR_PREVIEWS);
     }
 
-    // TODO: implement
-    public Schedule determineMovieScheduleForWeekendShows() {
-        return null;
+    public Schedule determineMovieScheduleForWeekendShowings() {
+        return determineMovieScheduleForShowings(whenLastWeekendShowingCanEnd, startTimeForWeekdayShowings, weekendClosingTime);
     }
 }
