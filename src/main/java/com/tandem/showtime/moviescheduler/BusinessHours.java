@@ -6,15 +6,15 @@ import java.util.regex.Pattern;
 import org.joda.time.LocalTime;
 
 import com.google.common.base.Strings;
-
+// TODO: clean up
 public class BusinessHours extends RuntimeException {
     private static final int MINUTES_REQURIED_TILL_FIRST_SHOWING = 15;
     private static final String HOUR_PATTERN = "(\\d{1,2}(?:\\:\\d{2})?)";
+    private static final Pattern pattern = Pattern.compile(HOUR_PATTERN);
     private String days;
     private String hours;
     private String opening;
     private String closing;
-    private String splitClosing;
     private LocalTime openingLocalTime;
     private LocalTime closingLocalTime;
     boolean isOpening = true;
@@ -37,26 +37,18 @@ public class BusinessHours extends RuntimeException {
     }
 
     private void extractOpeningAndClosingStringsWithAmOrPM() {
-
         opening = extractHourWith(hours);
+        // can use opening as a match to replace all occurrences, then use regex to look for numbers. if no numbers then they where the same number
+        String hoursWithOpeningTimeRemoved = hours.replaceAll(opening, "");
 
-        // check if opening and closing hour values are the same
-        int openingIndex = hours.lastIndexOf(opening);
-
-        int hoursLength = hours.length();
-        if (hoursLength - 4 == openingIndex) {  // we have the same number
+        Pattern hoursWithOpeningTimeRemovedPattern = Pattern.compile("\\d{2}");
+        Matcher hoursWithOpeningTimeRemovedMatcher = hoursWithOpeningTimeRemovedPattern.matcher(hoursWithOpeningTimeRemoved);
+        // hours DO contain the same number for opening and closing times
+        if (!hoursWithOpeningTimeRemovedMatcher.find()) {  // no hour numbers present after replace, we have the same number for closing as we do opening.
             closing = extractHourWith(opening);
         }
-        else {
-
-            // now split hours with opening value closing get remaining closing hours
-            String[] splitHoursWithOnlyClosingTimeRemaining = hours.split(opening); // TODO: doesn't work if opening & closing hours are the same 'number'
-            if (splitHoursWithOnlyClosingTimeRemaining != null &&
-                    splitHoursWithOnlyClosingTimeRemaining.length == 2) {
-                splitClosing = splitHoursWithOnlyClosingTimeRemaining[1];
-            }
-
-            closing = extractHourWith(splitClosing);
+        else { // hour number present after replace. hours DO NOT contain the same number for opening and closing
+            closing = extractHourWith(hoursWithOpeningTimeRemoved);
         }
     }
 
@@ -69,7 +61,6 @@ public class BusinessHours extends RuntimeException {
     }
 
     private String extractHourWith(String hours) {
-        Pattern pattern = Pattern.compile(HOUR_PATTERN);
         Matcher matcher = pattern.matcher(hours.trim().toLowerCase());
 
         String extractedHour = "";

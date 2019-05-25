@@ -17,13 +17,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application implements ApplicationRunner {
 
-	@Autowired
+	// TODO: lookinto creational patterns, clean code etc. perhaps use interfaces with factory method pattern.
+
+//	@Autowired
 	private MovieSchedulerService movieSchedulerService;
 	private static Logger LOG = LoggerFactory.getLogger(Application.class);
 	private ArgsProcessor argsProcessor;
-	private ApplicationArguments args;
-	private Hours hours = new Hours();
-	private Movies movies = new Movies();
 
 	public static void main(String[] args) {
 		LOG.info("*** STARTING APPLICATION ***");
@@ -39,6 +38,9 @@ public class Application implements ApplicationRunner {
 		argsProcessor = new ArgsProcessor(args);
 		Hours hours = argsProcessor.getHours();
 		Movies movies = argsProcessor.getMovies();
+
+		movieSchedulerService = new MovieSchedulerService(hours, movies);
+		movieSchedulerService.determineMovieScheduleForWeekdayShows();
 
 		LOG.info("*** END RUNNING APP ***");
 	}

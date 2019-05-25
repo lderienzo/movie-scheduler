@@ -1,12 +1,17 @@
 package com.tandem.showtime.moviescheduler;
 
-import lombok.Getter;
-import lombok.Setter;
 
-@Getter
-@Setter
+
+import org.joda.time.LocalTime;
+
+
+
 public class Showing {
-    private int startTime;
-    private int endTime;
-    private Movie movie;
+    private LocalTime startTime;
+    private LocalTime endTime;
+
+    public Showing(LocalTime startTime, LocalTime endTime) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 }

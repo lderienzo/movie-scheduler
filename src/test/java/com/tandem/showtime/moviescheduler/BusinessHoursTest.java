@@ -13,7 +13,7 @@ public class BusinessHoursTest {
     private BusinessHours businessHours;
 
     @Test
-    public void testWeekdayHoursAreCorrect_withSameHour() {
+    public void testWeekdayHoursAreCorrect_withSameHourWithoutColon() {
 
         // given
         businessHours = new BusinessHours(WEEKDAY_DAYS, WEEKDAY_HOURS);
@@ -43,7 +43,7 @@ public class BusinessHoursTest {
     }
 
     @Test
-    public void testWeekendHoursAreCorrect_bothUsingPM() {
+    public void testWeekendHoursAreCorrect_bothInPMAndColon() {
 
         // given
         businessHours = new BusinessHours(WEEKDAY_DAYS, "1:30 pm–11:59 pm");
@@ -55,6 +55,22 @@ public class BusinessHoursTest {
         // then
         assertThat(opening).isEqualTo(new LocalTime(1,30));
         assertThat(closing).isEqualTo(new LocalTime(23,59));
+    }
+
+
+    @Test
+    public void testWeekendHoursAreCorrect_bothHaveSameHourAndColon() {
+
+        // given
+        businessHours = new BusinessHours(WEEKDAY_DAYS, "1:30am–1:30 pm");
+
+        // when
+        LocalTime opening = businessHours.opening();
+        LocalTime closing = businessHours.closing();
+
+        // then
+        assertThat(opening).isEqualTo(new LocalTime(1,30));
+        assertThat(closing).isEqualTo(new LocalTime(13,30));
     }
 
     @Test

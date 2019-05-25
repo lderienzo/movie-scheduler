@@ -1,5 +1,8 @@
 package com.tandem.showtime.moviescheduler;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -7,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Strings;
 
+// TODO: clean up
 public class Movie {
 
     private String title;
@@ -16,6 +20,7 @@ public class Movie {
     private int lengthAsInt;
     private String extractedLengthStr;
     private String titleWithRatingForSchedule;
+    private List<Showing> showings = new ArrayList<>();
 
     @JsonCreator
     public Movie(@JsonProperty("title") String title,
@@ -53,11 +58,18 @@ public class Movie {
         Matcher matcher = pattern.matcher(length);
         if (matcher.find())
             this.extractedLengthStr = matcher.group(1);
+        else {
+            //TODO: throw exception
+        }
     }
 
 
     public String titleWithRatingForSchedule() {
         // TODO:
         return titleWithRatingForSchedule;
+    }
+
+    public void addShowing(Showing showing) {
+        showings.add(showing);
     }
 }

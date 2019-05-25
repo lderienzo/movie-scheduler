@@ -16,7 +16,6 @@ import org.springframework.boot.ApplicationArguments;
 public class ArgsProcessorTest {
 
     private ArgsProcessor argsProcessor;
-
     private ApplicationArguments args;
 
 

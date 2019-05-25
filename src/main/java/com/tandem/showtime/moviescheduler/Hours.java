@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Hours {
 
     private WeekdayHours weekdayHours;
-    private Weekend weekend;
+    private Weekend weekend;    // TODO: rename to "WeekendHours" and in JSON too.
 
     @JsonCreator
     public Hours(@JsonProperty("weekdayHours") WeekdayHours weekday, @JsonProperty("weekend") Weekend weekend) {

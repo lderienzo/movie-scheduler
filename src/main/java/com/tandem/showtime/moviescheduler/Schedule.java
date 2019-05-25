@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Schedule {
-    private List<Showing> schedule;
+    private List<Movie> schedule;
 
     public Schedule(int showings) {
         schedule = new ArrayList<>(showings);
     }
 
-    public List<Showing> get() {
+    public List<Movie> get() {
         return schedule;
     }
 }
