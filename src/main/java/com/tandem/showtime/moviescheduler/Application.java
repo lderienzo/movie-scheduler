@@ -1,11 +1,5 @@
 package com.tandem.showtime.moviescheduler;
 
-import static com.tandem.showtime.moviescheduler.ArgOption.HOURS_FILE;
-import static com.tandem.showtime.moviescheduler.ArgOption.MOVIE_FILE;
-
-import java.io.File;
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +7,8 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+// TODO: reduce visibility of everything as much as possible. Make as much 'package-private' as possible.
 
 @SpringBootApplication
 public class Application implements ApplicationRunner {

@@ -3,6 +3,7 @@ package com.tandem.showtime.moviescheduler;
 import org.joda.time.LocalTime;
 
 // TODO: clean up and see if this can be made into a service and have Spring inject it
+// TODO: write code to process weekend!!!
 //@Service
 public class MovieSchedulerService {
 
@@ -57,7 +58,7 @@ public class MovieSchedulerService {
                 currentTime = startTimeForRequiredPreviews;
             }
 
-            schedule.get().add(movie);
+            schedule.moviesPlaying().add(movie);
         }
         return schedule;
     }

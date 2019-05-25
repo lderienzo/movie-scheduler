@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableList;
 
 // TODO: clean up
 public class Movie {
@@ -20,7 +21,7 @@ public class Movie {
     private int lengthAsInt;
     private String extractedLengthStr;
     private String titleWithRatingForSchedule;
-    private List<Showing> showings = new ArrayList<>();
+    private List<Showing> showings = new ArrayList<>();     // TODO: how to expose this without allowing client to directly manipulate
 
     @JsonCreator
     public Movie(@JsonProperty("title") String title,
@@ -33,6 +34,9 @@ public class Movie {
         convertMinutesFromStringToInt();
     }
 
+    public String title() {
+        return title;
+    }
 
     private String extractMovieTitleWithRatingFromInfoString() {
         return "";
@@ -71,5 +75,9 @@ public class Movie {
 
     public void addShowing(Showing showing) {
         showings.add(showing);
+    }
+
+    public List<Showing> getShowings() {
+        return ImmutableList.copyOf(showings);
     }
 }

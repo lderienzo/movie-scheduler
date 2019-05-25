@@ -14,4 +14,12 @@ public class Showing {
         this.startTime = startTime;
         this.endTime = endTime;
     }
+
+    public LocalTime startTime() {
+        return startTime;
+    }
+
+    public LocalTime endTime() {
+        return endTime;
+    }
 }

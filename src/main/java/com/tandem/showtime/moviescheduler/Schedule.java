@@ -10,7 +10,7 @@ public class Schedule {
         schedule = new ArrayList<>(showings);
     }
 
-    public List<Movie> get() {
+    public List<Movie> moviesPlaying() {
         return schedule;
     }
 }
