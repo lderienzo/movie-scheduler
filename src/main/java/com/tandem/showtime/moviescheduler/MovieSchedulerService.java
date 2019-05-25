@@ -1,5 +1,6 @@
 package com.tandem.showtime.moviescheduler;
 
+import org.joda.time.LocalTime;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -7,65 +8,89 @@ public class MovieSchedulerService {
 
     private static final int TIME_REQUIRED_FOR_PREVIEWS = 15;
     private static final int TIME_REQUIRED_FOR_THEATRE_PREP = 20;
+    private static final int NUMBER_OF_MOVIES_SHOWING = 5;
+    private Hours hours;
+    private Movies movies;
+    private WeekdayHours weekdayHours;
+    private LocalTime currentTime;
+    private LocalTime closingTime;
 
-    private Schedule determineMovieScheduleForWeekdayShows(Movies movies, HoursOfOperation hoursOfOperation) {
-        WeekdayHours weekdayHours = hoursOfOperation.getWeekdayHours();
-        int startTimeForWeekdayShows = weekdayHours.getStartTimeForWeekdayShows();
-        int verylastShowingEndTime = determineVeryLastShowingEndingTime(weekdayHours);
-        int currentTime = verylastShowingEndTime;
-        Schedule schedule = new Schedule(5);
+    public MovieSchedulerService(Hours hours, Movies movies) {
+        this.hours = hours;
+        this.movies = movies;
+        this.weekdayHours = hours.weekday();
+    }
 
-        for (Movie movie : movies.playing()) {	// for each movie in list
+
+    public Schedule determineMovieScheduleForWeekdayShows() {
+
+        LocalTime startTimeForWeekdayShows = determineStartTimeForWeekdayShows();
+        LocalTime verylastShowingEndTime = determineVeryLastShowingEndingTime();
+        currentTime = verylastShowingEndTime;
+        Schedule schedule = new Schedule(NUMBER_OF_MOVIES_SHOWING);
+
+        for (Movie movie : movies.playing()) {
             while (true) { 	// find optimal beginning and end times (given constraints)
                 Showing showing = new Showing();
-                int lastShowingEndingTime = determineLastShowingEndingTime(currentTime);
-                int latestTimeLastShowingCanStart = determineLatestTimeLastShowingCanStart(showing, lastShowingEndingTime);
-                if (latestTimeLastShowingCanStart < startTimeForWeekdayShows) {
+                LocalTime lastShowingEndingTime = determineLastShowingEndingTime();
+                LocalTime latestTimeLastShowingCanStart = determineLatestTimeLastShowingCanStart(showing, lastShowingEndingTime);
+                if (latestTimeLastShowCanStartIsEarlierThanStartTimeForWeekdayShows
+                        (latestTimeLastShowingCanStart, startTimeForWeekdayShows)) {
                     break;
                 }
-                int scheduledShowingStartTime = determineScheduledShowingStartTime(latestTimeLastShowingCanStart);
-                showing.setStartTime(scheduledShowingStartTime);
-                int scheduledShowingEndTime = determineScheduledShowingEndTime(scheduledShowingStartTime, Integer.valueOf(movie.length()));
-                showing.setEndTime(scheduledShowingEndTime);
-                schedule.get().add(showing);
-                int startTimeForRequiredPreviews = determineStartTimeForRequiredPreviews(scheduledShowingStartTime);
-                currentTime = startTimeForRequiredPreviews;
+                LocalTime scheduledShowingStartTime = determineScheduledShowingStartTime(latestTimeLastShowingCanStart);
+//                showing.setStartTime(scheduledShowingStartTime);
+//                int scheduledShowingEndTime = determineScheduledShowingEndTime(scheduledShowingStartTime, Integer.valueOf(movie.length()));
+//                showing.setEndTime(scheduledShowingEndTime);
+//                schedule.get().add(showing);
+//                int startTimeForRequiredPreviews = determineStartTimeForRequiredPreviews(scheduledShowingStartTime);
+//                currentTime = startTimeForRequiredPreviews;
             }
         }
 
         return schedule;
     }
 
-    private int determineVeryLastShowingEndingTime(WeekdayHours weekdayHours) {
-        int closingTime = determineClosingTimeForWeekdays(weekdayHours);
+    private boolean latestTimeLastShowCanStartIsEarlierThanStartTimeForWeekdayShows
+            (LocalTime latestTimeLastShowingCanStart, LocalTime startTimeForWeekdayShows) {
+        return latestTimeLastShowingCanStart.compareTo(startTimeForWeekdayShows) < 0;
+    }
+
+    private LocalTime determineStartTimeForWeekdayShows() {
+        return weekdayHours.startTimeForWeekdayShows();
+    }
+
+    private LocalTime determineVeryLastShowingEndingTime() {
+        closingTime = determineClosingTimeForWeekdays();
         return closingTime;
     }
 
-    // Create Weekday Class
-    private int determineClosingTimeForWeekdays(WeekdayHours weekdayHours) {
-        return weekdayHours.getClosingTime();
+    private LocalTime determineClosingTimeForWeekdays() {
+        return weekdayHours.closing();
     }
 
-    private int determineLastShowingEndingTime(int currentTime) {
-        if (currentTime == 11) // 11PM
+    private LocalTime determineLastShowingEndingTime() {    // TODO: must write version for weekend
+        if (currentTime.getHourOfDay() == closingTime.getHourOfDay()) // 11PM
             return currentTime;
         else
-            return currentTime - TIME_REQUIRED_FOR_THEATRE_PREP;
+            return currentTime.minusMinutes(TIME_REQUIRED_FOR_THEATRE_PREP);
     }
 
-    private int determineLatestTimeLastShowingCanStart(Showing showing, int lastShowingEndingTime) {
-        return lastShowingEndingTime - Integer.valueOf(showing.getMovie().length());
+    private LocalTime determineLatestTimeLastShowingCanStart(Showing showing, LocalTime lastShowingEndingTime) {
+        return lastShowingEndingTime.minusMinutes(showing.getMovie().length());
     }
 
-    private int determineScheduledShowingStartTime(int latestTimeLastShowingCanStart) {
-        int scheduledShowingStartTime = makeStartTimeEasyToReadForSchedule(latestTimeLastShowingCanStart);
+    private LocalTime determineScheduledShowingStartTime(LocalTime latestTimeLastShowingCanStart) {
+        LocalTime scheduledShowingStartTime = makeStartTimeEasyToReadForSchedule(latestTimeLastShowingCanStart);
         return scheduledShowingStartTime;
     }
 
-    private int makeStartTimeEasyToReadForSchedule(int latestTimeLastShowingCanStart) {
-        int scheduledShowingStartTime = 0;
-        // TODO: return some magic to round down to nearest 5 minute increment to return scheduledShowingStartTime
-        return scheduledShowingStartTime;
+    private LocalTime makeStartTimeEasyToReadForSchedule(LocalTime latestTimeLastShowingCanStart) {
+        return ScheduleUtils.formatTimeForSchedule(latestTimeLastShowingCanStart);
+    }
+
+    private boolean minutesAreNotAnIncrementOfFive(LocalTime latestTimeLastShowingCanStart) {
+        return latestTimeLastShowingCanStart.getMinuteOfHour() % 5 != 0;
     }
 
     private int determineScheduledShowingEndTime(int scheduledShowingStartTime, int movieLength) {

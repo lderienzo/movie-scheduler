@@ -36,7 +36,7 @@ public class MovieSchedulerServiceTest {
     @Ignore
     @Test
     public void testRun() {
-        //Your system should be able to take in the details of
+        //Your system should be able closing take in the details of
         // each movie and output a start and end time of each
         // showing that abides by all of the provided rules.
 
