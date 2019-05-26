@@ -13,6 +13,7 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -47,7 +48,8 @@ public class SchedulePdfWriterService {
 
             // determine number of showings here...
             int numOfWeekdayShowings = weekdaySchedule.moviesPlaying().get(j).weekdayShowings().size();
-            int numOfWeekendShowings = weekendSchedule.moviesPlaying().get(j).weekendShowings().size();
+            int numOfWeekendShowings = weekendSchedule.moviesPlaying().get(j).weekendShowings().size(); // either the same or more than weekday
+            int howManyMoreWeekendShowsThanWeekday = numOfWeekendShowings - numOfWeekdayShowings;
 
 //            cell = new PdfPCell(new Phrase());
 //            cell.setBorder(Rectangle.NO_BORDER);
@@ -55,12 +57,14 @@ public class SchedulePdfWriterService {
 //            table.addCell(cell);
 
             cell = new PdfPCell(new Phrase(weekendMovie.titleWithRatingForSchedule(), MOVIE_TITLE_HEADING_FONT));
-//            cell.setBorder(Rectangle.NO_BORDER);
-            cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+            cell.setBorder(Rectangle.NO_BORDER);
+            cell.setVerticalAlignment(Element.ALIGN_BOTTOM);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 //            cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
             cell.setColspan(3);
-            cell.setFixedHeight(52f);
+            cell.setFixedHeight(72f);
+            cell.setPaddingBottom(10);
+            cell.setPaddingRight(35);
             table.addCell(cell);
 
 //            cell.setPhrase(new Phrase());
@@ -71,44 +75,46 @@ public class SchedulePdfWriterService {
             // ---- new row ------
 
             cell = new PdfPCell(new Phrase("Weekday", WEEKEND_WEEKDAY_HEADING_FONT));
-//            cell.setBorder(Rectangle.NO_BORDER);
+            cell.setBorder(Rectangle.NO_BORDER);
             table.addCell(cell);
 
             cell.setPhrase(new Phrase());
-//            cell.setBorder(Rectangle.NO_BORDER);
+            cell.setBorder(Rectangle.NO_BORDER);
             table.addCell(cell);
 
             cell.setPhrase(new Phrase("Weekend", WEEKEND_WEEKDAY_HEADING_FONT));
-//            cell.setBorder(Rectangle.NO_BORDER);
+            cell.setBorder(Rectangle.NO_BORDER);
             table.addCell(cell);
 
             // ---- new row ------
 
-            for (int i = weekendMovie.weekendShowings().size(); i > 0 ; i--) {
+            for (int i = weekendMovie.weekendShowings().size()-1; i >= 0 ; i--) {
+
+                // however many weekend showings there are, subtract weekday showings from it and add 1
 
                 Showing weekdayShowing; // = new Showing();
                 String weekdayStartTime = "";
-                if (i <= numOfWeekdayShowings) {
-                    weekdayShowing = weekdaySchedule.moviesPlaying().get(j).weekdayShowings().get(i-1); // remember, this will have fewer showings
+                if (i-howManyMoreWeekendShowsThanWeekday <= numOfWeekdayShowings && numOfWeekdayShowings != 0) {
+                    weekdayShowing = weekdaySchedule.moviesPlaying().get(j).weekdayShowings().get(i-howManyMoreWeekendShowsThanWeekday); // remember, this will have fewer showings
                     weekdayStartTime = AM_PM_FORMATTER.print(weekdayShowing.startTime()) + " - " + AM_PM_FORMATTER.print(weekdayShowing.endTime());
                     numOfWeekdayShowings--;
                 }
 
-                Showing weekendShowing =  weekendSchedule.moviesPlaying().get(j).weekendShowings().get(i-1);
+                Showing weekendShowing =  weekendSchedule.moviesPlaying().get(j).weekendShowings().get(i);
                 String weekendStartTime = AM_PM_FORMATTER.print(weekendShowing.startTime()) + " - " + AM_PM_FORMATTER.print(weekendShowing.endTime());
 
                 cell.setPhrase(new Phrase(weekdayStartTime, TABLE_CELL_FONT));
-//                cell.setBorder(Rectangle.NO_BORDER);
+                cell.setBorder(Rectangle.NO_BORDER);
 //                cell.setFixedHeight(36f);
                 table.addCell(cell);
 
                 cell.setPhrase(new Phrase());
-//                cell.setBorder(Rectangle.NO_BORDER);
+                cell.setBorder(Rectangle.NO_BORDER);
 //                cell.setFixedHeight(36f);
                 table.addCell(cell);
 
                 cell.setPhrase(new Phrase(weekendStartTime, TABLE_CELL_FONT));
-//                cell.setBorder(Rectangle.NO_BORDER);
+                cell.setBorder(Rectangle.NO_BORDER);
 //                cell.setFixedHeight(36f);
                 table.addCell(cell);
             }
