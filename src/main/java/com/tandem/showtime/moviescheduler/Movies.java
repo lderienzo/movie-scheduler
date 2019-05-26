@@ -8,7 +8,7 @@ import com.google.common.collect.ImmutableList;
 
 
 public class Movies {
-    private List<Movie> playing; // TODO: make immutable after construction?
+    private List<Movie> playing;
 
     @JsonCreator
     public Movies (@JsonProperty("playing") List<Movie> playing) {

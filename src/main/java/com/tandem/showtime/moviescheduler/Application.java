@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application implements ApplicationRunner {
 
-	// TODO: lookinto creational patterns, clean code etc. perhaps use interfaces with factory method pattern.
+	// TODO: look into creational patterns, clean code etc. perhaps use interfaces with factory method pattern.
 
 //	@Autowired
 	private MovieSchedulerService movieSchedulerService;

@@ -1,6 +1,5 @@
 package com.tandem.showtime.moviescheduler;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -21,7 +20,8 @@ public class Movie {
     private int lengthAsInt;
     private String extractedLengthStr;
     private String titleWithRatingForSchedule;
-    private List<Showing> showings = new ArrayList<>();     // TODO: how to expose this without allowing client to directly manipulate
+    private List<Showing> weekdayShowings = new ArrayList<>();
+    private List<Showing> weekendShowings = new ArrayList<>();
 
     @JsonCreator
     public Movie(@JsonProperty("title") String title,
@@ -69,15 +69,37 @@ public class Movie {
 
 
     public String titleWithRatingForSchedule() {
-        // TODO:
+        String[] splitTitle = title.split("\\(");
+        if (splitTitle == null || splitTitle.length != 2) {
+            // TODO: ERROR
+        }
+        String alteredTitle = splitTitle[0].trim();
+
+        String[] splitRating = rating.split("Rated ");
+        if (splitRating == null || splitRating.length != 2) {
+            // TODO: ERROR
+        }
+
+        String ratingSymbol = splitRating[1].replace(".", "");
+        ratingSymbol = "(" + ratingSymbol + ")";
+
+        titleWithRatingForSchedule = alteredTitle + " " + ratingSymbol;
         return titleWithRatingForSchedule;
     }
 
-    public void addShowing(Showing showing) {
-        showings.add(showing);
+    public void addWeekdayShowing(Showing showing) {
+        weekdayShowings.add(showing);
     }
 
-    public List<Showing> getShowings() {
-        return ImmutableList.copyOf(showings);
+    public List<Showing> weekdayShowings() {
+        return ImmutableList.copyOf(weekdayShowings);
+    }
+
+    public void addWeekendShowing(Showing showing) {
+        weekendShowings.add(showing);
+    }
+
+    public List<Showing> weekendShowings() {
+        return ImmutableList.copyOf(weekendShowings);
     }
 }

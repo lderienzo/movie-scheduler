@@ -3,7 +3,6 @@ package com.tandem.showtime.moviescheduler;
 import org.joda.time.LocalTime;
 
 // TODO: clean up and see if this can be made into a service and have Spring inject it
-// TODO: write code to process weekend!!!
 //@Service
 public class MovieSchedulerService {
 
@@ -21,10 +20,10 @@ public class MovieSchedulerService {
     private LocalTime startTimeForWeekendShowings;
     private LocalTime whenLastWeekendShowingCanEnd;
     private Schedule schedule;
+    private boolean isWeekday;
 
     public MovieSchedulerService(Hours theatreHours, Movies moviesPlaying) {
         setArgs(theatreHours, moviesPlaying);
-        initializeSchedule();
         setWeekdayHours(theatreHours);
         setWeekendHours(theatreHours);
         determineStartTimeForWeekdayShowings();
@@ -81,6 +80,8 @@ public class MovieSchedulerService {
     }
 
     public Schedule determineMovieScheduleForWeekdayShowings() {
+        isWeekday = true;
+        initializeSchedule();
         return determineMovieScheduleForShowings(whenLastWeekdayShowingCanEnd, startTimeForWeekdayShowings, weekdayClosingTime);
     }
 
@@ -94,19 +95,24 @@ public class MovieSchedulerService {
 
                 LocalTime showingEndingTime = determineShowingEndingTime(closingTime);
 
-                LocalTime latestTimeShowingCanStart = determineLatestTimeShowingCanStart(movie, showingEndingTime);
+                LocalTime latestShowingCanStart = determineLatestTimeShowingCanStart(movie, showingEndingTime);
 
-                if (latestTimeShowCanStartIsBeforeStartTimeForWeekdayShowings(latestTimeShowingCanStart, startTimeForAllShowings)) {
+                if (latestTimeShowCanStartIsBeforeStartTimeForWeekdayShowings(latestShowingCanStart, startTimeForAllShowings)) {
                     break;
                 }
 
-                LocalTime scheduledShowingStartTime = determineScheduledShowingStartTime(latestTimeShowingCanStart);
+                LocalTime scheduledStartTime = determineScheduledShowingStartTime(latestShowingCanStart);
 
-                LocalTime scheduledShowingEndTime = determineScheduledShowingEndTime(scheduledShowingStartTime, movie.length());
+                LocalTime scheduledEndTime = determineScheduledShowingEndTime(scheduledStartTime, movie.length());
 
-                movie.addShowing(new Showing(scheduledShowingStartTime, scheduledShowingEndTime));
+                // TODO: problem here. need to differentiate between weekday and weekend showings -- don't like this solution
+                if (isWeekday) {
+                    movie.addWeekdayShowing(new Showing(scheduledStartTime, scheduledEndTime));
+                }
+                else
+                    movie.addWeekendShowing(new Showing(scheduledStartTime, scheduledEndTime));
 
-                LocalTime startTimeForRequiredPreviews = determineStartTimeForRequiredPreviews(scheduledShowingStartTime);
+                LocalTime startTimeForRequiredPreviews = determineStartTimeForRequiredPreviews(scheduledStartTime);
 
                 currentTime = startTimeForRequiredPreviews;
             }
@@ -150,6 +156,8 @@ public class MovieSchedulerService {
     }
 
     public Schedule determineMovieScheduleForWeekendShowings() {
-        return determineMovieScheduleForShowings(whenLastWeekendShowingCanEnd, startTimeForWeekdayShowings, weekendClosingTime);
+        isWeekday = false;
+        initializeSchedule();
+        return determineMovieScheduleForShowings(whenLastWeekendShowingCanEnd, startTimeForWeekendShowings, weekendClosingTime);
     }
 }

@@ -91,7 +91,6 @@ public class ArgsProcessor {
     private String pathOptionValueFor(String optionName) {
         return args.getSourceArgs()[indexForOptionNumber]
                 .split("=")[indexForOptionValue];
-//        return args.getOptionValues(optionName).playing(0); // TODO: getOptionValues appears closing have a bug in that its not returning just the value, but the whole option string including the name.
     }
 
     private void createHoursObjectFromFile() {

@@ -15,6 +15,8 @@ public class Showing {
         this.endTime = endTime;
     }
 
+    public Showing() {}
+
     public LocalTime startTime() {
         return startTime;
     }

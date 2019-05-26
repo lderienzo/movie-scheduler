@@ -72,25 +72,26 @@ public class MovieSchedulerServiceTest {
         Schedule schedule = movieSchedulerService.determineMovieScheduleForWeekdayShowings();
         assertThat(schedule).isNotNull();
         assertThat(schedule.moviesPlaying()).hasSize(2);
+        assertThat(schedule.moviesPlaying().get(0).weekdayShowings()).hasSize(5);
         assertThat(schedule.moviesPlaying().get(0).title()).isEqualTo("Liar Liar (1997).");
-        assertThat(startTimeForFirtMoviePlaying(0, schedule)).isEqualTo(new LocalTime(21, 30)); //9:30
-        assertThat(endTimeForFirtMoviePlaying(0, schedule)).isEqualTo(new LocalTime(22, 56));
-        assertThat(startTimeForFirtMoviePlaying(1, schedule)).isEqualTo(new LocalTime(19, 25));
-        assertThat(endTimeForFirtMoviePlaying(1, schedule)).isEqualTo(new LocalTime(20, 51));
-        assertThat(startTimeForFirtMoviePlaying(2, schedule)).isEqualTo(new LocalTime(17, 20));
-        assertThat(endTimeForFirtMoviePlaying(2, schedule)).isEqualTo(new LocalTime(18, 46));
-        assertThat(startTimeForFirtMoviePlaying(3, schedule)).isEqualTo(new LocalTime(15, 15));
-        assertThat(endTimeForFirtMoviePlaying(3, schedule)).isEqualTo(new LocalTime(16, 41));
-        assertThat(startTimeForFirtMoviePlaying(4, schedule)).isEqualTo(new LocalTime(13, 10));
-        assertThat(endTimeForFirtMoviePlaying(4, schedule)).isEqualTo(new LocalTime(14, 36));
+        assertThat(startTimeForFirstWeekdayShowing(0, schedule)).isEqualTo(new LocalTime(21, 30)); //9:30
+        assertThat(endTimeForFirstWeekdayShowing(0, schedule)).isEqualTo(new LocalTime(22, 56));
+        assertThat(startTimeForFirstWeekdayShowing(1, schedule)).isEqualTo(new LocalTime(19, 25));
+        assertThat(endTimeForFirstWeekdayShowing(1, schedule)).isEqualTo(new LocalTime(20, 51));
+        assertThat(startTimeForFirstWeekdayShowing(2, schedule)).isEqualTo(new LocalTime(17, 20));
+        assertThat(endTimeForFirstWeekdayShowing(2, schedule)).isEqualTo(new LocalTime(18, 46));
+        assertThat(startTimeForFirstWeekdayShowing(3, schedule)).isEqualTo(new LocalTime(15, 15));
+        assertThat(endTimeForFirstWeekdayShowing(3, schedule)).isEqualTo(new LocalTime(16, 41));
+        assertThat(startTimeForFirstWeekdayShowing(4, schedule)).isEqualTo(new LocalTime(13, 10));
+        assertThat(endTimeForFirstWeekdayShowing(4, schedule)).isEqualTo(new LocalTime(14, 36));
     }
 
-    private LocalTime startTimeForFirtMoviePlaying(int showingNumber, Schedule schedule) {
-        return schedule.moviesPlaying().get(0).getShowings().get(showingNumber).startTime();
+    private LocalTime startTimeForFirstWeekdayShowing(int showingNumber, Schedule schedule) {
+        return schedule.moviesPlaying().get(0).weekdayShowings().get(showingNumber).startTime();
     }
 
-    private LocalTime endTimeForFirtMoviePlaying(int showingNumber, Schedule schedule) {
-        return schedule.moviesPlaying().get(0).getShowings().get(showingNumber).endTime();
+    private LocalTime endTimeForFirstWeekdayShowing(int showingNumber, Schedule schedule) {
+        return schedule.moviesPlaying().get(0).weekdayShowings().get(showingNumber).endTime();
     }
 
     @Test
@@ -127,18 +128,27 @@ public class MovieSchedulerServiceTest {
         Schedule schedule = movieSchedulerService.determineMovieScheduleForWeekendShowings();
         assertThat(schedule).isNotNull();
         assertThat(schedule.moviesPlaying()).hasSize(2);
+        assertThat(schedule.moviesPlaying().get(0).weekendShowings()).hasSize(6);
         assertThat(schedule.moviesPlaying().get(0).title()).isEqualTo("Liar Liar (1997).");
-        assertThat(startTimeForFirtMoviePlaying(0, schedule)).isEqualTo(new LocalTime(22, 30));
-        assertThat(endTimeForFirtMoviePlaying(0, schedule)).isEqualTo(new LocalTime(23, 56));
-        assertThat(startTimeForFirtMoviePlaying(1, schedule)).isEqualTo(new LocalTime(20, 25));
-        assertThat(endTimeForFirtMoviePlaying(1, schedule)).isEqualTo(new LocalTime(21, 51));
-        assertThat(startTimeForFirtMoviePlaying(2, schedule)).isEqualTo(new LocalTime(18, 20));
-        assertThat(endTimeForFirtMoviePlaying(2, schedule)).isEqualTo(new LocalTime(19, 46));
-        assertThat(startTimeForFirtMoviePlaying(3, schedule)).isEqualTo(new LocalTime(16, 15));
-        assertThat(endTimeForFirtMoviePlaying(3, schedule)).isEqualTo(new LocalTime(17, 41));
-        assertThat(startTimeForFirtMoviePlaying(4, schedule)).isEqualTo(new LocalTime(14, 10));
-        assertThat(endTimeForFirtMoviePlaying(4, schedule)).isEqualTo(new LocalTime(15, 36));
-        assertThat(startTimeForFirtMoviePlaying(5, schedule)).isEqualTo(new LocalTime(12, 5));
-        assertThat(endTimeForFirtMoviePlaying(5, schedule)).isEqualTo(new LocalTime(13, 31));
+        assertThat(startTimeForFirstWeekendShowing(0, schedule)).isEqualTo(new LocalTime(22, 30));
+        assertThat(endTimeForFirstWeekendShowing(0, schedule)).isEqualTo(new LocalTime(23, 56));
+        assertThat(startTimeForFirstWeekendShowing(1, schedule)).isEqualTo(new LocalTime(20, 25));
+        assertThat(endTimeForFirstWeekendShowing(1, schedule)).isEqualTo(new LocalTime(21, 51));
+        assertThat(startTimeForFirstWeekendShowing(2, schedule)).isEqualTo(new LocalTime(18, 20));
+        assertThat(endTimeForFirstWeekendShowing(2, schedule)).isEqualTo(new LocalTime(19, 46));
+        assertThat(startTimeForFirstWeekendShowing(3, schedule)).isEqualTo(new LocalTime(16, 15));
+        assertThat(endTimeForFirstWeekendShowing(3, schedule)).isEqualTo(new LocalTime(17, 41));
+        assertThat(startTimeForFirstWeekendShowing(4, schedule)).isEqualTo(new LocalTime(14, 10));
+        assertThat(endTimeForFirstWeekendShowing(4, schedule)).isEqualTo(new LocalTime(15, 36));
+        assertThat(startTimeForFirstWeekendShowing(5, schedule)).isEqualTo(new LocalTime(12, 5));
+        assertThat(endTimeForFirstWeekendShowing(5, schedule)).isEqualTo(new LocalTime(13, 31));
+    }
+
+    private LocalTime startTimeForFirstWeekendShowing(int showingNumber, Schedule schedule) {
+        return schedule.moviesPlaying().get(0).weekendShowings().get(showingNumber).startTime();
+    }
+
+    private LocalTime endTimeForFirstWeekendShowing(int showingNumber, Schedule schedule) {
+        return schedule.moviesPlaying().get(0).weekendShowings().get(showingNumber).endTime();
     }
 }
