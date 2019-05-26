@@ -3,6 +3,7 @@ package com.tandem.showtime.moviescheduler;
 
 import static com.tandem.showtime.moviescheduler.ArgOption.HOURS_FILE;
 import static com.tandem.showtime.moviescheduler.ArgOption.MOVIE_FILE;
+import static com.tandem.showtime.moviescheduler.ArgOption.SCHEDULE_FILE;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,23 +12,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 
+import com.google.common.base.Strings;
+
 public class ArgsProcessor {
     private static Logger LOG = LoggerFactory.getLogger(ArgsProcessor.class);
     private ApplicationArguments args;
     private Hours hours = new Hours();
     private Movies movies = new Movies();
+    private String outFilePath = "";    // TODO: double-check if this initialization is necessary. trying to avoid potential NPE.
     private String moviesFilePath = "";
     private String hoursFilePath = "";
+    private String directoryPortionOfPath;
     private String hoursOption = HOURS_FILE.toString();
     private String moviesOption = MOVIE_FILE.toString();
+    private String outFilePathOption = SCHEDULE_FILE.toString();
     private int expectedNumberOfArgs = ArgOption.values().length;
-    private int indexForOptionValue = 1;
+    private static final int INDEX_FOR_OPTION_VALUE = 1;
     private int indexForOptionNumber;
 
     public ArgsProcessor(ApplicationArguments args) {
         setArgs(args);
         if (argsWhereNotSet())
-            throw new ArgsProcessorException("Unable closing run application due closing missing arguments.");
+            throw new ArgsProcessorException("Unable to run application due closing missing arguments.");
+        // TODO: print usage to console at this point
     }
 
     private void setArgs(ApplicationArguments args) {
@@ -43,25 +50,21 @@ public class ArgsProcessor {
     }
 
     public Hours getHours() {
-        LOG.info("*** BEGIN PROCESSING HOURS ***");
         loadHours();
-        LOG.info("*** END PROCESSING HOURS ***");
         return hours;
     }
 
     public Movies getMovies() {
-        LOG.info("*** BEGIN PROCESSING MOVIES ***");
         loadMovies();
-        LOG.info("*** END PROCESSING MOVIES ***");
         return movies;
     }
 
     private void loadHours() {
-        getHoursFilePathFromCommandOption();
+        getHoursFilePathFromArgOption();
         createHoursObjectFromFile();
     }
 
-    private void getHoursFilePathFromCommandOption() {
+    private void getHoursFilePathFromArgOption() {
         if (filePathForHoursIsPresent()) {
             setHoursFilePathWithOptionValue();
         }
@@ -79,25 +82,85 @@ public class ArgsProcessor {
         return args.containsOption(optionName);
     }
 
+    public String getOutFilePath() {
+        indexForOptionNumber = 2;
+        outFilePath = getFilePathFromOption(indexForOptionNumber);
+        makeSureOutFilePathIsValid();
+        return outFilePath;
+    }
+
+    private void makeSureOutFilePathIsValid() {
+        if (outFilePath.contains(systemDependentDefaultNameSeparator())) {
+            extractJustDirectoryPortionOfPath();
+            determineIfDirectoryExists();
+        }
+    }
+
+    private void extractJustDirectoryPortionOfPath() {
+        int indexOfLastSeparatorChar = outFilePath.lastIndexOf(systemDependentDefaultNameSeparator());
+        directoryPortionOfPath = outFilePath.substring(0,indexOfLastSeparatorChar);
+    }
+
+    private void determineIfDirectoryExists() {
+        if (directoryDoesNotExist()) {
+            clearOutFilePath();
+            throw new ArgsProcessorException("Directory portion of path specified for 'schedule_file' is invalid. Please re-enter.");
+        }
+    }
+
+    private boolean directoryDoesNotExist() {
+        return !directoryExists();
+    }
+
+    private boolean directoryExists() {
+        boolean directoryExists = false;
+        if (pathIsNotEmpty()) {
+            File file = new File(directoryPortionOfPath);
+            directoryExists = file.isDirectory();
+        }
+        return directoryExists;
+    }
+
+    private boolean pathIsNotEmpty() {
+        return !Strings.isNullOrEmpty(directoryPortionOfPath);
+    }
+
+    private void clearOutFilePath() {
+        outFilePath = "";
+    }
+
+    private String systemDependentDefaultNameSeparator() {
+        return File.separatorChar + "";
+    }
+
+    private boolean outFilePathIsPresent() {
+        return filePathWasSpecified(outFilePathOption);
+    }
+
+    private void setOutFilePathWithOptionValue() {
+
+        outFilePath = getFilePathFromOption(indexForOptionNumber);
+    }
+
     private void setHoursFilePathWithOptionValue() {
         indexForOptionNumber = 0;
-        hoursFilePath = getFilePathFromOption(hoursOption);
+        hoursFilePath = getFilePathFromOption(indexForOptionNumber);
     }
 
-    private String getFilePathFromOption(String optionName) {
-        return pathOptionValueFor(optionName);
+    private String getFilePathFromOption(int indexForOptionNumber) {
+        return pathOptionValueFor(indexForOptionNumber);
     }
 
-    private String pathOptionValueFor(String optionName) {
+    private String pathOptionValueFor(int indexForOptionNumber) {
         return args.getSourceArgs()[indexForOptionNumber]
-                .split("=")[indexForOptionValue];
+                .split("=")[INDEX_FOR_OPTION_VALUE];
     }
 
     private void createHoursObjectFromFile() {
         try {
             createHoursObjectFromJsonFile();
         } catch (IOException e) {
-            throw new MovieShowingSchedulerException(e.getMessage());
+            throw new MovieSchedulerException(e.getMessage());
         }
     }
 
@@ -105,14 +168,16 @@ public class ArgsProcessor {
         if (filePathIsValid(hoursFilePath)) {
             hours = JsonDeserializerForScheduler.getHours(hoursFilePath);
         }
+        else
+            throw new ArgsProcessorException("Invalid file path for " + HOURS_FILE.toString());
     }
 
     private void loadMovies() {
-        getMoviesFilePathFromCommandOption();
+        getMoviesFilePathFromArgOption();
         createMoviesObjectFromFile();
     }
 
-    private void getMoviesFilePathFromCommandOption() {
+    private void getMoviesFilePathFromArgOption() {
         if (filePathForMoviesIsPresent())
             setMoviesFilePathWithOptionValue();
     }
@@ -123,14 +188,14 @@ public class ArgsProcessor {
 
     private void setMoviesFilePathWithOptionValue() {
         indexForOptionNumber = 1;
-        moviesFilePath = getFilePathFromOption(moviesOption);
+        moviesFilePath = getFilePathFromOption(indexForOptionNumber);
     }
 
     private void createMoviesObjectFromFile() {
         try {
             createMoviesObjectFromJsonFile();
         } catch (IOException e) {
-            throw new MovieShowingSchedulerException(e.getMessage());
+            throw new MovieSchedulerException(e.getMessage());
         }
     }
 
@@ -138,10 +203,12 @@ public class ArgsProcessor {
         if (filePathIsValid(moviesFilePath)) {
             movies = JsonDeserializerForScheduler.getMovies(moviesFilePath);
         }
+        else
+            throw new ArgsProcessorException("Invalid file path for " + MOVIE_FILE.toString());
     }
 
     private boolean filePathIsValid(String path) {
         File file = new File(path);
-        return file != null && file.isFile() && file.canRead();
+        return file != null && file.isFile() && file.canRead();     // TODO: use isReadable(Path path)?
     }
 }

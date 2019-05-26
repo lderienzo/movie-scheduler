@@ -1,6 +1,10 @@
 package com.tandem.showtime.moviescheduler;
 
+import java.io.FileNotFoundException;
+
 import org.joda.time.LocalTime;
+
+import com.itextpdf.text.DocumentException;
 
 // TODO: clean up and see if this can be made into a service and have Spring inject it
 //@Service
@@ -19,11 +23,15 @@ public class MovieSchedulerService {
     private LocalTime whenLastWeekdayShowingCanEnd;
     private LocalTime startTimeForWeekendShowings;
     private LocalTime whenLastWeekendShowingCanEnd;
-    private Schedule schedule;
-    private boolean isWeekday;
 
-    public MovieSchedulerService(Hours theatreHours, Movies moviesPlaying) {
-        setArgs(theatreHours, moviesPlaying);
+    //    private Schedule schedule;
+    private Schedule weekdaySchedule = new Schedule();
+    private Schedule weekendSchedule = new Schedule();
+    private boolean isWeekday;
+    private String outFilePath;
+
+    public MovieSchedulerService(Hours theatreHours, Movies moviesPlaying, String scheduleOutputFilePath) {
+        setArgs(theatreHours, moviesPlaying, scheduleOutputFilePath);
         setWeekdayHours(theatreHours);
         setWeekendHours(theatreHours);
         determineStartTimeForWeekdayShowings();
@@ -32,13 +40,16 @@ public class MovieSchedulerService {
         determineWhenLastWeekendShowingCanEnd();
     }
 
-    private void setArgs(Hours theatreHours, Movies moviesPlaying) {
+    private void setArgs(Hours theatreHours, Movies moviesPlaying, String scheduleOutputFilePath) {
         hours = theatreHours;
         movies = moviesPlaying;
+        outFilePath = scheduleOutputFilePath;
     }
 
-    private void initializeSchedule() {
-        schedule = new Schedule(forNumberOfMoviesPlaying());
+    private void initializeSchedules() {
+//        schedule = new Schedule(forNumberOfMoviesPlaying());
+        weekdaySchedule = new Schedule(forNumberOfMoviesPlaying());
+        weekendSchedule = new Schedule(forNumberOfMoviesPlaying());
     }
 
     private int forNumberOfMoviesPlaying() {
@@ -79,13 +90,30 @@ public class MovieSchedulerService {
         return weekendHours.closing();
     }
 
-    public Schedule determineMovieScheduleForWeekdayShowings() {
+    private Schedule determineMovieScheduleForWeekdayShowings() {
         isWeekday = true;
-        initializeSchedule();
-        return determineMovieScheduleForShowings(whenLastWeekdayShowingCanEnd, startTimeForWeekdayShowings, weekdayClosingTime);
+        initializeSchedules();
+        return determineMovieScheduleForShowings(weekdaySchedule, whenLastWeekdayShowingCanEnd,
+                                                 startTimeForWeekdayShowings, weekdayClosingTime);
     }
 
-    private Schedule determineMovieScheduleForShowings(LocalTime whenLastShowingCanEnd, LocalTime startTimeForAllShowings, LocalTime closingTime) {
+    public void generateSchedule() {
+        determineMovieScheduleForWeekdayShowings();
+        determineMovieScheduleForWeekendShowings();
+        writeSchedulesToFile();
+    }
+
+    private void writeSchedulesToFile() {
+        try {
+            new SchedulePdfWriterService(weekdaySchedule, weekendSchedule).writeSchedules(outFilePath);
+        } catch (FileNotFoundException | DocumentException e) {
+            throw new MovieSchedulerException(e.getMessage());
+        }
+    }
+
+    private Schedule determineMovieScheduleForShowings(Schedule schedule, LocalTime whenLastShowingCanEnd,
+                                                       LocalTime startTimeForAllShowings,
+                                                       LocalTime closingTime) {
 
         for (Movie movie : movies.playing()) {
 
@@ -155,9 +183,18 @@ public class MovieSchedulerService {
         return scheduledShowingStartTime.minusMinutes(TIME_REQUIRED_FOR_PREVIEWS);
     }
 
-    public Schedule determineMovieScheduleForWeekendShowings() {
+    private Schedule determineMovieScheduleForWeekendShowings() {
         isWeekday = false;
-        initializeSchedule();
-        return determineMovieScheduleForShowings(whenLastWeekendShowingCanEnd, startTimeForWeekendShowings, weekendClosingTime);
+        initializeSchedules();
+        return determineMovieScheduleForShowings(weekendSchedule, whenLastWeekendShowingCanEnd,
+                                                 startTimeForWeekendShowings, weekendClosingTime);
+    }
+
+    public Schedule getWeekdaySchedule() {
+        return weekdaySchedule;
+    }
+
+    public Schedule getWeekendSchedule() {
+        return weekendSchedule;
     }
 }

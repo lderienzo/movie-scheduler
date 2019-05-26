@@ -2,6 +2,7 @@ package com.tandem.showtime.moviescheduler;
 
 import static com.tandem.showtime.moviescheduler.ArgOption.HOURS_FILE;
 import static com.tandem.showtime.moviescheduler.ArgOption.MOVIE_FILE;
+import static com.tandem.showtime.moviescheduler.TestConstants.PATH_TO_TEST_SCHEDULE_OUTPUT_FILE;
 import static com.tandem.showtime.moviescheduler.TestConstants.TEST_ARGS;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -68,8 +69,8 @@ public class MovieSchedulerServiceTest {
 
 
         // then when
-        MovieSchedulerService movieSchedulerService = new MovieSchedulerService(hours, movies);
-        Schedule schedule = movieSchedulerService.determineMovieScheduleForWeekdayShowings();
+        MovieSchedulerService movieSchedulerService = new MovieSchedulerService(hours, movies, PATH_TO_TEST_SCHEDULE_OUTPUT_FILE);
+        Schedule schedule = movieSchedulerService.getWeekdaySchedule();
         assertThat(schedule).isNotNull();
         assertThat(schedule.moviesPlaying()).hasSize(2);
         assertThat(schedule.moviesPlaying().get(0).weekdayShowings()).hasSize(5);
@@ -124,8 +125,8 @@ public class MovieSchedulerServiceTest {
 
 
         // then when
-        MovieSchedulerService movieSchedulerService = new MovieSchedulerService(hours, movies);
-        Schedule schedule = movieSchedulerService.determineMovieScheduleForWeekendShowings();
+        MovieSchedulerService movieSchedulerService = new MovieSchedulerService(hours, movies, PATH_TO_TEST_SCHEDULE_OUTPUT_FILE);
+        Schedule schedule = movieSchedulerService.getWeekendSchedule();
         assertThat(schedule).isNotNull();
         assertThat(schedule.moviesPlaying()).hasSize(2);
         assertThat(schedule.moviesPlaying().get(0).weekendShowings()).hasSize(6);

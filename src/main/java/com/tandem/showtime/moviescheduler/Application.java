@@ -33,9 +33,9 @@ public class Application implements ApplicationRunner {
 		argsProcessor = new ArgsProcessor(args);
 		Hours hours = argsProcessor.getHours();
 		Movies movies = argsProcessor.getMovies();
-
-		movieSchedulerService = new MovieSchedulerService(hours, movies);
-		movieSchedulerService.determineMovieScheduleForWeekdayShowings();
+		String scheduleOutputFilePath = argsProcessor.getOutFilePath();
+		movieSchedulerService = new MovieSchedulerService(hours, movies,scheduleOutputFilePath);
+		movieSchedulerService.generateSchedule();
 
 		LOG.info("*** END RUNNING APP ***");
 	}

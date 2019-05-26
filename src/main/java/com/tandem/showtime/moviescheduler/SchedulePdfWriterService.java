@@ -31,9 +31,9 @@ public class SchedulePdfWriterService {
         this.weekendSchedule = weekendSchedule;
     }
 
-    public void writeSchedules() throws FileNotFoundException, DocumentException {  // TODO: make this a RuntimeException
+    public void writeSchedules(String outputFilePath) throws FileNotFoundException, DocumentException {  // TODO: make this a RuntimeException
         Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream("/Users/lderienzo/Downloads/tandem_cinemas_showing_schedule.pdf"));
+        PdfWriter.getInstance(document, new FileOutputStream(outputFilePath));
 
         document.open();
 

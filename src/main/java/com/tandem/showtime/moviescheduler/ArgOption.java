@@ -3,7 +3,8 @@ package com.tandem.showtime.moviescheduler;
 public enum ArgOption {
 
     MOVIE_FILE("movies_file"),
-    HOURS_FILE("hours_file"),;
+    HOURS_FILE("hours_file"),
+    SCHEDULE_FILE("schedule_file");
 
     private String argName;
 
