@@ -45,7 +45,7 @@ public class SchedulePdfWriterServiceTest {
         assertThat(movies.playing()).hasSize(2);
 
 
-        MovieScheduleGenerator movieScheduleGenerator = new MovieScheduleGenerator(hours, movies, PATH_TO_TEST_SCHEDULE_OUTPUT_FILE);
+        MovieScheduleGenerator movieScheduleGenerator = new MovieScheduleGenerator(hours, movies);
         movieScheduleGenerator.generateSchedules();
 
         // weekday schedule

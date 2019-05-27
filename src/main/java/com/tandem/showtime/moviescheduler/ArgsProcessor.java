@@ -27,9 +27,10 @@ public class ArgsProcessor {
     private int indexOfOptionInArgList;
     private static final int INDEX_FOR_OPTION_VALUE = 1;
     private static final String INVALID_FILE_PATH_MESSAGE_PREFIX = "Invalid file path for ";
-    private static final String USAGE_MESSAGE = "\nUsage:\n" +
-            " \tcom.tandem.showtime.moviescheduler.Application --" + HOURS_FILE + "=<path_to_hours_json_file> " +
-            "--"+ MOVIES_FILE +"=<path_to_movies_json_file> --"+SCHEDULE_FILE+"=<(may include directory path) new_file_name>\n";
+    private static final String USAGE_MESSAGE = "\nUsage:\n" + " \tcom.tandem.showtime.moviescheduler.Application " +
+                                                    "--" + HOURS_FILE + "=<path_to_hours_json_file> " +
+                                                    "--" + MOVIES_FILE + "=<path_to_movies_json_file> " +
+                                                    "--" + SCHEDULE_FILE + "=<(may include directory path) new_file_name>\n";
     private static final Logger LOG = LoggerFactory.getLogger(ArgsProcessor.class);
 
 

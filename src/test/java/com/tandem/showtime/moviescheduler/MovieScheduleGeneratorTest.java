@@ -41,7 +41,7 @@ public class MovieScheduleGeneratorTest {
         assertThat(movies.playing()).hasSize(2);
 
         // then -- when
-        MovieScheduleGenerator movieScheduleGenerator = new MovieScheduleGenerator(hours, movies, PATH_TO_TEST_SCHEDULE_OUTPUT_FILE);
+        MovieScheduleGenerator movieScheduleGenerator = new MovieScheduleGenerator(hours, movies);
         movieScheduleGenerator.generateSchedules();
 
         Schedule schedule = movieScheduleGenerator.getWeekdaySchedule();
@@ -89,7 +89,7 @@ public class MovieScheduleGeneratorTest {
         assertThat(movies.playing()).hasSize(2);
 
         // then when
-        MovieScheduleGenerator movieScheduleGenerator = new MovieScheduleGenerator(hours, movies, PATH_TO_TEST_SCHEDULE_OUTPUT_FILE);
+        MovieScheduleGenerator movieScheduleGenerator = new MovieScheduleGenerator(hours, movies);
         movieScheduleGenerator.generateSchedules();
 
         Schedule schedule = movieScheduleGenerator.getWeekendSchedule();

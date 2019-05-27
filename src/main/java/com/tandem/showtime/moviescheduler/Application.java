@@ -16,17 +16,16 @@ import com.itextpdf.text.DocumentException;
 @SpringBootApplication
 public class Application implements ApplicationRunner {
 
-	// TODO: look into creational patterns, clean code etc. perhaps use interfaces with factory method pattern.
-
-//	@Autowired
 	private MovieScheduleGenerator movieScheduleGenerator;
 	private static Logger LOG = LoggerFactory.getLogger(Application.class);
 	private ArgsProcessor argsProcessor;
 
 	public static void main(String[] args) {
 		LOG.info("*** STARTING APPLICATION ***");
+
 		SpringApplication app = new SpringApplication(Application.class);
 		app.run(args);
+
 		LOG.info("*** APPLICATION STOPPED ***");
 	}
 
@@ -37,12 +36,10 @@ public class Application implements ApplicationRunner {
 		argsProcessor = new ArgsProcessor(args);
 		Hours hours = argsProcessor.getHours();
 		Movies movies = argsProcessor.getMovies();
-		String scheduleOutputFilePath = argsProcessor.getOutFilePath();
-		movieScheduleGenerator = new MovieScheduleGenerator(hours, movies,scheduleOutputFilePath);
+		movieScheduleGenerator = new MovieScheduleGenerator(hours, movies);
 		movieScheduleGenerator.generateSchedules();
-
-		writeSchedulesToFile(argsProcessor.getOutFilePath(),
-				movieScheduleGenerator.getWeekdaySchedule(), movieScheduleGenerator.getWeekendSchedule());
+		writeSchedulesToFile(argsProcessor.getOutFilePath(), movieScheduleGenerator.getWeekdaySchedule(),
+																movieScheduleGenerator.getWeekendSchedule());
 		LOG.info("*** END RUNNING APP ***");
 	}
 

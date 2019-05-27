@@ -1,10 +1,8 @@
 package com.tandem.showtime.moviescheduler;
 
-import java.io.FileNotFoundException;
 
 import org.joda.time.LocalTime;
 
-import com.itextpdf.text.DocumentException;
 
 public class MovieScheduleGenerator {
     private static final int TIME_REQUIRED_FOR_PREVIEWS = 15;
@@ -22,10 +20,9 @@ public class MovieScheduleGenerator {
     private Schedule weekdaySchedule;
     private Schedule weekendSchedule;
     private boolean isWeekday;
-    private String outFilePath;
 
-    public MovieScheduleGenerator(Hours theatreHours, Movies moviesPlaying, String scheduleOutputFilePath) {
-        setArgs(moviesPlaying, scheduleOutputFilePath);
+    public MovieScheduleGenerator(Hours theatreHours, Movies moviesPlaying) {
+        setArgs(moviesPlaying);
         setWeekdayHours(theatreHours);
         setWeekendHours(theatreHours);
         determineStartTimeForWeekdayShowings();
@@ -34,9 +31,8 @@ public class MovieScheduleGenerator {
         determineWhenLastWeekendShowingCanEnd();
     }
 
-    private void setArgs(Movies moviesPlaying, String scheduleOutputFilePath) {
+    private void setArgs(Movies moviesPlaying) {
         movies = moviesPlaying;
-        outFilePath = scheduleOutputFilePath;
     }
 
     private void setWeekdayHours(Hours hours) {
