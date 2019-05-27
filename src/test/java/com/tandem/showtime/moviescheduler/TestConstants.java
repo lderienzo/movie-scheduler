@@ -13,13 +13,13 @@ public class TestConstants {
     private static final String TEST_MOVIES_JSON_FILE_NAME = "test-movies.json";
 
     private static String PATH_TO_JSON_HOURS_FILE =
-            new FileUtils().getAbsolutePathOfResourceFile(HOURS_JSON_FILE_NAME);
+            new TestFileUtils().getAbsolutePathOfResourceFile(HOURS_JSON_FILE_NAME);
 
     private static String PATH_TO_JSON_TEST_MOVIE_FILE =
-            new FileUtils().getAbsolutePathOfResourceFile(TEST_MOVIES_JSON_FILE_NAME);
+            new TestFileUtils().getAbsolutePathOfResourceFile(TEST_MOVIES_JSON_FILE_NAME);
 
     public static String PATH_TO_JSON_MOVIE_FILE =
-            new FileUtils().getAbsolutePathOfResourceFile(MOVIES_JSON_FILE_NAME);
+            new TestFileUtils().getAbsolutePathOfResourceFile(MOVIES_JSON_FILE_NAME);
 
     public static final String PATH_TO_TEST_SCHEDULE_OUTPUT_FILE = "/Users/lderienzo/Downloads/movie_schedule.pdf";
 

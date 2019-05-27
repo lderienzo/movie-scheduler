@@ -26,18 +26,13 @@ public class SchedulePdfWriterServiceTest {
         // given
         args = mock(ApplicationArguments.class);
 
-
         when(args.getSourceArgs()).thenReturn(TEST_ARGS);
-
         String hoursOptionName = HOURS_FILE.toString();
         when(args.containsOption(hoursOptionName)).thenReturn(true);
-
         String moviesOptionName = MOVIES_FILE.toString();
         when(args.containsOption(moviesOptionName)).thenReturn(true);
-
         String scheduleOutputFileOptionName = SCHEDULE_FILE.toString();
         when(args.containsOption(scheduleOutputFileOptionName)).thenReturn(true);
-
         argsProcessor = new ArgsProcessor(args);
 
 
@@ -50,17 +45,18 @@ public class SchedulePdfWriterServiceTest {
         assertThat(movies.playing()).hasSize(2);
 
 
-        MovieSchedulerService movieSchedulerService = new MovieSchedulerService(hours, movies, PATH_TO_TEST_SCHEDULE_OUTPUT_FILE);
+        MovieScheduleGenerator movieScheduleGenerator = new MovieScheduleGenerator(hours, movies, PATH_TO_TEST_SCHEDULE_OUTPUT_FILE);
+        movieScheduleGenerator.generateSchedules();
 
         // weekday schedule
-        Schedule weekdaySchedule = movieSchedulerService.getWeekdaySchedule();
+        Schedule weekdaySchedule = movieScheduleGenerator.getWeekdaySchedule();
         assertThat(weekdaySchedule).isNotNull();
         assertThat(weekdaySchedule.moviesPlaying()).hasSize(2);
         assertThat(weekdaySchedule.moviesPlaying().get(0).weekdayShowings()).hasSize(5);
         assertThat(weekdaySchedule.moviesPlaying().get(1).weekdayShowings()).hasSize(4);
 
         // weekend schedule
-        Schedule weekendSchedule = movieSchedulerService.getWeekendSchedule();
+        Schedule weekendSchedule = movieScheduleGenerator.getWeekendSchedule();
         assertThat(weekendSchedule).isNotNull();
         assertThat(weekendSchedule.moviesPlaying()).hasSize(2);
         assertThat(weekdaySchedule.moviesPlaying().get(0).weekendShowings()).hasSize(6);

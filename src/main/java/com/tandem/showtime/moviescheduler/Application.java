@@ -1,11 +1,15 @@
 package com.tandem.showtime.moviescheduler;
 
+import java.io.FileNotFoundException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import com.itextpdf.text.DocumentException;
 
 // TODO: reduce visibility of everything as much as possible. Make as much 'package-private' as possible.
 
@@ -15,7 +19,7 @@ public class Application implements ApplicationRunner {
 	// TODO: look into creational patterns, clean code etc. perhaps use interfaces with factory method pattern.
 
 //	@Autowired
-	private MovieSchedulerService movieSchedulerService;
+	private MovieScheduleGenerator movieScheduleGenerator;
 	private static Logger LOG = LoggerFactory.getLogger(Application.class);
 	private ArgsProcessor argsProcessor;
 
@@ -34,9 +38,19 @@ public class Application implements ApplicationRunner {
 		Hours hours = argsProcessor.getHours();
 		Movies movies = argsProcessor.getMovies();
 		String scheduleOutputFilePath = argsProcessor.getOutFilePath();
-		movieSchedulerService = new MovieSchedulerService(hours, movies,scheduleOutputFilePath);
-		movieSchedulerService.generateSchedule();
+		movieScheduleGenerator = new MovieScheduleGenerator(hours, movies,scheduleOutputFilePath);
+		movieScheduleGenerator.generateSchedules();
 
+		writeSchedulesToFile(argsProcessor.getOutFilePath(),
+				movieScheduleGenerator.getWeekdaySchedule(), movieScheduleGenerator.getWeekendSchedule());
 		LOG.info("*** END RUNNING APP ***");
+	}
+
+	private void writeSchedulesToFile(String outFilePath, Schedule weekdaySchedule, Schedule weekendSchedule) {
+		try {
+			new SchedulePdfWriterService(weekdaySchedule, weekendSchedule).writeSchedules(outFilePath);
+		} catch (FileNotFoundException | DocumentException e) {
+			throw new MovieSchedulerException(e.getMessage());
+		}
 	}
 }

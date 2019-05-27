@@ -37,40 +37,26 @@ public class SchedulePdfWriterService {
 
         document.open();
 
-        int numberOfColumns = 3;
         PdfPTable table = new PdfPTable(new float[] { 5, 4, 5});
         table.setWidthPercentage(60);
         PdfPCell cell = null;
         // use number of movies of weekend schedule to do main loop since both have same number of movies
         for (int j = 0; j <  weekendSchedule.moviesPlaying().size(); j ++) {
-
-            Movie weekendMovie = weekendSchedule.moviesPlaying().get(j);
-
             // determine number of showings here...
             int numOfWeekdayShowings = weekdaySchedule.moviesPlaying().get(j).weekdayShowings().size();
             int numOfWeekendShowings = weekendSchedule.moviesPlaying().get(j).weekendShowings().size(); // either the same or more than weekday
             int howManyMoreWeekendShowsThanWeekday = numOfWeekendShowings - numOfWeekdayShowings;
 
-//            cell = new PdfPCell(new Phrase());
-//            cell.setBorder(Rectangle.NO_BORDER);
-//            cell.setFixedHeight(52f);
-//            table.addCell(cell);
-
+            Movie weekendMovie = weekendSchedule.moviesPlaying().get(j);
             cell = new PdfPCell(new Phrase(weekendMovie.titleWithRatingForSchedule(), MOVIE_TITLE_HEADING_FONT));
             cell.setBorder(Rectangle.NO_BORDER);
             cell.setVerticalAlignment(Element.ALIGN_BOTTOM);
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-//            cell.setHorizontalAlignment(Element.ALIGN_MIDDLE);
             cell.setColspan(3);
             cell.setFixedHeight(72f);
             cell.setPaddingBottom(10);
             cell.setPaddingRight(35);
             table.addCell(cell);
-
-//            cell.setPhrase(new Phrase());
-//            cell.setBorder(Rectangle.NO_BORDER);
-//            cell.setFixedHeight(52f);
-//            table.addCell(cell);
 
             // ---- new row ------
 
@@ -92,7 +78,7 @@ public class SchedulePdfWriterService {
 
                 // however many weekend showings there are, subtract weekday showings from it and add 1
 
-                Showing weekdayShowing; // = new Showing();
+                Showing weekdayShowing;
                 String weekdayStartTime = "";
                 if (i-howManyMoreWeekendShowsThanWeekday <= numOfWeekdayShowings && numOfWeekdayShowings != 0) {
                     weekdayShowing = weekdaySchedule.moviesPlaying().get(j).weekdayShowings().get(i-howManyMoreWeekendShowsThanWeekday); // remember, this will have fewer showings
