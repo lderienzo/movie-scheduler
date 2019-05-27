@@ -1,7 +1,7 @@
 package com.tandem.showtime.moviescheduler;
 
 import static com.tandem.showtime.moviescheduler.ArgOption.HOURS_FILE;
-import static com.tandem.showtime.moviescheduler.ArgOption.MOVIE_FILE;
+import static com.tandem.showtime.moviescheduler.ArgOption.MOVIES_FILE;
 import static com.tandem.showtime.moviescheduler.TestConstants.PATH_TO_TEST_SCHEDULE_OUTPUT_FILE;
 import static com.tandem.showtime.moviescheduler.TestConstants.TEST_ARGS;
 import static org.assertj.core.api.Java6Assertions.assertThat;
@@ -51,7 +51,7 @@ public class MovieSchedulerServiceTest {
         when(args.containsOption(hoursOptionName)).thenReturn(true);
 
         // -- for Movies
-        String moviesOptionName = MOVIE_FILE.toString();
+        String moviesOptionName = MOVIES_FILE.toString();
         when(args.containsOption(moviesOptionName)).thenReturn(true);
 
         argsProcessor = new ArgsProcessor(args);
@@ -107,7 +107,7 @@ public class MovieSchedulerServiceTest {
         when(args.containsOption(hoursOptionName)).thenReturn(true);
 
         // -- for Movies
-        String moviesOptionName = MOVIE_FILE.toString();
+        String moviesOptionName = MOVIES_FILE.toString();
         when(args.containsOption(moviesOptionName)).thenReturn(true);
 
         argsProcessor = new ArgsProcessor(args);

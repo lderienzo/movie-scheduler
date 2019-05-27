@@ -2,7 +2,7 @@ package com.tandem.showtime.moviescheduler;
 
 
 import static com.tandem.showtime.moviescheduler.ArgOption.HOURS_FILE;
-import static com.tandem.showtime.moviescheduler.ArgOption.MOVIE_FILE;
+import static com.tandem.showtime.moviescheduler.ArgOption.MOVIES_FILE;
 import static com.tandem.showtime.moviescheduler.ArgOption.SCHEDULE_FILE;
 
 import java.io.File;
@@ -15,7 +15,7 @@ import org.springframework.boot.ApplicationArguments;
 import com.google.common.base.Strings;
 
 public class ArgsProcessor {
-    private static Logger LOG = LoggerFactory.getLogger(ArgsProcessor.class);
+
     private ApplicationArguments args;
     private Hours hours = new Hours();
     private Movies movies = new Movies();
@@ -23,33 +23,40 @@ public class ArgsProcessor {
     private String moviesFilePath = "";
     private String hoursFilePath = "";
     private String directoryPortionOfPath;
-    private String hoursOption = HOURS_FILE.toString();
-    private String moviesOption = MOVIE_FILE.toString();
-    private String outFilePathOption = SCHEDULE_FILE.toString();
-    private int expectedNumberOfArgs = ArgOption.values().length;
+    private String[] argOptionNameAndValue;
+    private int indexOfOptionInArgList;
     private static final int INDEX_FOR_OPTION_VALUE = 1;
-    private int indexForOptionNumber;
+    private static final String INVALID_FILE_PATH_MESSAGE_PREFIX = "Invalid file path for ";
+    private static final String USAGE_MESSAGE = "\nUsage:\n" +
+            " \tcom.tandem.showtime.moviescheduler.Application --" + HOURS_FILE + "=<path_to_hours_json_file> " +
+            "--"+ MOVIES_FILE +"=<path_to_movies_json_file> --"+SCHEDULE_FILE+"=<(may include directory path) new_file_name>\n";
+    private static final Logger LOG = LoggerFactory.getLogger(ArgsProcessor.class);
+
 
     public ArgsProcessor(ApplicationArguments args) {
-        setArgs(args);
-        if (argsWhereNotSet())
-            throw new ArgsProcessorException("Unable to run application due closing missing arguments.");
-        // TODO: print usage to console at this point
+        LOG.info("*** BEGIN ARGS PROCESSING ***");
+        if (allArgsPresent(args))
+            this.args = args;
+        else {
+            printUsageToConsole();
+            throw new ArgsProcessorException("Unable to run application due to missing arguments.");
+        }
+        LOG.info("*** END ARGS PROCESSING ***");
     }
 
-    private void setArgs(ApplicationArguments args) {
-        this.args = args;
+    private boolean allArgsPresent(ApplicationArguments args) {
+        return args != null && args.containsOption(HOURS_FILE.toString()) &&
+                args.containsOption(MOVIES_FILE.toString()) &&
+                args.containsOption(SCHEDULE_FILE.toString());
     }
 
-    private boolean argsWhereNotSet() {
-        return !argsWhereSet();
-    }
-
-    private boolean argsWhereSet() {
-        return this.args != null && args.getSourceArgs().length == expectedNumberOfArgs;
+    private void printUsageToConsole() {
+        System.out.println(USAGE_MESSAGE);
     }
 
     public Hours getHours() {
+        // TODO: this smells of a single responsibility principle violation. arg processing should not
+        // involve loading files, it should just parse out file path info and pass to something else to load the file.
         loadHours();
         return hours;
     }
@@ -59,49 +66,137 @@ public class ArgsProcessor {
         return movies;
     }
 
-    private void loadHours() {
-        getHoursFilePathFromArgOption();
-        createHoursObjectFromFile();
-    }
-
-    private void getHoursFilePathFromArgOption() {
-        if (filePathForHoursIsPresent()) {
-            setHoursFilePathWithOptionValue();
-        }
-    }
-
-    private boolean filePathForHoursIsPresent() {
-        return filePathWasSpecified(hoursOption);
-    }
-
-    private boolean filePathWasSpecified(String optionName) {
-        return containsOptionValueFor(optionName);
-    }
-
-    private boolean containsOptionValueFor(String optionName) {
-        return args.containsOption(optionName);
-    }
-
     public String getOutFilePath() {
-        indexForOptionNumber = 2;
-        outFilePath = getFilePathFromOption(indexForOptionNumber);
-        makeSureOutFilePathIsValid();
+        setOutFilePath();
         return outFilePath;
     }
 
-    private void makeSureOutFilePathIsValid() {
-        if (outFilePath.contains(systemDependentDefaultNameSeparator())) {
-            extractJustDirectoryPortionOfPath();
-            determineIfDirectoryExists();
+    private void loadHours() {
+        checkIfHoursFilePathValueIsPresent(HOURS_FILE);
+        checkIfHoursFilePathValueIsValid();
+        setHoursFilePathWithValue();
+        createHoursObjectFromJsonFile();
+    }
+
+    private void checkIfHoursFilePathValueIsPresent(ArgOption argOption) {
+        indexOfOptionInArgList = 0;
+        checkIfOptionValueIsPresent(argOption);
+    }
+
+    private void checkIfOptionValueIsPresent(ArgOption argOption) {
+        argOptionNameAndValue = splitOptionNameAndValue(indexOfOptionInArgList);
+        if (optionValueIsMissing()) {
+            printUsageToConsole();
+            throw new ArgsProcessorException("Missing option value for "+ argOption);
         }
     }
 
-    private void extractJustDirectoryPortionOfPath() {
-        int indexOfLastSeparatorChar = outFilePath.lastIndexOf(systemDependentDefaultNameSeparator());
-        directoryPortionOfPath = outFilePath.substring(0,indexOfLastSeparatorChar);
+    private String[] splitOptionNameAndValue(int optionIndex) {
+        return args.getSourceArgs()[optionIndex].split("=");
     }
 
-    private void determineIfDirectoryExists() {
+    private boolean optionValueIsMissing() {
+        return argOptionNameAndValue.length != 2;
+    }
+
+    public void checkIfHoursFilePathValueIsValid() {
+        if (filePathIsNotValid(argOptionNameAndValue[INDEX_FOR_OPTION_VALUE])) {
+            printUsageToConsole();
+            throw new ArgsProcessorException(INVALID_FILE_PATH_MESSAGE_PREFIX + HOURS_FILE.toString());
+        }
+    }
+
+    private boolean filePathIsNotValid(String path) {
+        return !filePathIsValid(path);
+    }
+
+    private boolean filePathIsValid(String path) {
+        File file = new File(path);
+        return file != null && file.isFile() && file.canRead();     // TODO: use isReadable(Path path)?
+    }
+
+    private void setHoursFilePathWithValue() {
+        hoursFilePath = argOptionNameAndValue[INDEX_FOR_OPTION_VALUE];
+    }
+
+    private void createHoursObjectFromJsonFile() {
+        deserializeHoursFileContents();
+    }
+
+    private void deserializeHoursFileContents() {
+        try {
+            hours = JsonDeserializerForScheduler.getHours(hoursFilePath);
+        }
+        catch(IOException e) {
+            throw new ArgsProcessorException(e.getMessage());
+        }
+    }
+
+    private void loadMovies() {
+        checkIfMoviesFilePathValueIsPresent(MOVIES_FILE);
+        checkIfMoviesFilePathValueIsValid();
+        setMoviesFilePathWithValue();
+        createMoviesObjectFromJsonFile();
+    }
+
+    private void checkIfMoviesFilePathValueIsPresent(ArgOption argOption) {
+        indexOfOptionInArgList = 1;
+        checkIfOptionValueIsPresent(argOption);
+    }
+
+    private void checkIfMoviesFilePathValueIsValid() {
+        if (filePathIsNotValid(argOptionNameAndValue[INDEX_FOR_OPTION_VALUE])) {
+            printUsageToConsole();
+            throw new ArgsProcessorException(INVALID_FILE_PATH_MESSAGE_PREFIX + HOURS_FILE.toString());
+        }
+    }
+
+    private void setMoviesFilePathWithValue() {
+        moviesFilePath = argOptionNameAndValue[INDEX_FOR_OPTION_VALUE];
+    }
+
+    private void createMoviesObjectFromJsonFile() {
+            deserializeMovieFileContents();
+    }
+
+    private void deserializeMovieFileContents() {
+        try {
+            movies = JsonDeserializerForScheduler.getMovies(moviesFilePath);
+        } catch (IOException e) {
+            throw new ArgsProcessorException(e.getMessage());
+        }
+    }
+
+    private void setOutFilePath() {
+        checkIfOutFileOptionValueIsPresent(SCHEDULE_FILE);
+        checkIfOutFilePathValueIsValid();
+        setOutFilePathWithValue();
+    }
+
+    private void checkIfOutFileOptionValueIsPresent(ArgOption argOption) {
+        indexOfOptionInArgList = 2;
+        checkIfOptionValueIsPresent(argOption);
+    }
+
+    private void checkIfOutFilePathValueIsValid() {
+        if (argOptionNameAndValue[INDEX_FOR_OPTION_VALUE].contains(systemDependentDefaultNameSeparator())) {
+            extractDirectoryPortionOfPath();
+            determineIfDirectoryIsValid();
+        }
+        else
+            throw new ArgsProcessorException("The specified file path for " + SCHEDULE_FILE + " contains the incorrect system name separator symbol.");
+    }
+
+    private String systemDependentDefaultNameSeparator() {
+        return File.separatorChar + "";
+    }
+
+    private void extractDirectoryPortionOfPath() {
+        int indexOfLastSeparatorChar = argOptionNameAndValue[INDEX_FOR_OPTION_VALUE].lastIndexOf(systemDependentDefaultNameSeparator());
+        directoryPortionOfPath = argOptionNameAndValue[INDEX_FOR_OPTION_VALUE].substring(0,indexOfLastSeparatorChar);
+    }
+
+    private void determineIfDirectoryIsValid() {
         if (directoryDoesNotExist()) {
             clearOutFilePath();
             throw new ArgsProcessorException("Directory portion of path specified for 'schedule_file' is invalid. Please re-enter.");
@@ -129,86 +224,7 @@ public class ArgsProcessor {
         outFilePath = "";
     }
 
-    private String systemDependentDefaultNameSeparator() {
-        return File.separatorChar + "";
-    }
-
-    private boolean outFilePathIsPresent() {
-        return filePathWasSpecified(outFilePathOption);
-    }
-
-    private void setOutFilePathWithOptionValue() {
-
-        outFilePath = getFilePathFromOption(indexForOptionNumber);
-    }
-
-    private void setHoursFilePathWithOptionValue() {
-        indexForOptionNumber = 0;
-        hoursFilePath = getFilePathFromOption(indexForOptionNumber);
-    }
-
-    private String getFilePathFromOption(int indexForOptionNumber) {
-        return pathOptionValueFor(indexForOptionNumber);
-    }
-
-    private String pathOptionValueFor(int indexForOptionNumber) {
-        return args.getSourceArgs()[indexForOptionNumber]
-                .split("=")[INDEX_FOR_OPTION_VALUE];
-    }
-
-    private void createHoursObjectFromFile() {
-        try {
-            createHoursObjectFromJsonFile();
-        } catch (IOException e) {
-            throw new MovieSchedulerException(e.getMessage());
-        }
-    }
-
-    private void createHoursObjectFromJsonFile() throws IOException {
-        if (filePathIsValid(hoursFilePath)) {
-            hours = JsonDeserializerForScheduler.getHours(hoursFilePath);
-        }
-        else
-            throw new ArgsProcessorException("Invalid file path for " + HOURS_FILE.toString());
-    }
-
-    private void loadMovies() {
-        getMoviesFilePathFromArgOption();
-        createMoviesObjectFromFile();
-    }
-
-    private void getMoviesFilePathFromArgOption() {
-        if (filePathForMoviesIsPresent())
-            setMoviesFilePathWithOptionValue();
-    }
-
-    private boolean filePathForMoviesIsPresent() {
-        return filePathWasSpecified(moviesOption);
-    }
-
-    private void setMoviesFilePathWithOptionValue() {
-        indexForOptionNumber = 1;
-        moviesFilePath = getFilePathFromOption(indexForOptionNumber);
-    }
-
-    private void createMoviesObjectFromFile() {
-        try {
-            createMoviesObjectFromJsonFile();
-        } catch (IOException e) {
-            throw new MovieSchedulerException(e.getMessage());
-        }
-    }
-
-    private void createMoviesObjectFromJsonFile() throws IOException {
-        if (filePathIsValid(moviesFilePath)) {
-            movies = JsonDeserializerForScheduler.getMovies(moviesFilePath);
-        }
-        else
-            throw new ArgsProcessorException("Invalid file path for " + MOVIE_FILE.toString());
-    }
-
-    private boolean filePathIsValid(String path) {
-        File file = new File(path);
-        return file != null && file.isFile() && file.canRead();     // TODO: use isReadable(Path path)?
+    private void setOutFilePathWithValue() {
+        outFilePath = argOptionNameAndValue[INDEX_FOR_OPTION_VALUE];
     }
 }

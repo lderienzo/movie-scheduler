@@ -1,7 +1,7 @@
 package com.tandem.showtime.moviescheduler;
 
 import static com.tandem.showtime.moviescheduler.ArgOption.HOURS_FILE;
-import static com.tandem.showtime.moviescheduler.ArgOption.MOVIE_FILE;
+import static com.tandem.showtime.moviescheduler.ArgOption.MOVIES_FILE;
 import static com.tandem.showtime.moviescheduler.ArgOption.SCHEDULE_FILE;
 
 
@@ -25,12 +25,12 @@ public class TestConstants {
 
     public static final String[] ARGS =
             {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
-            "--" + MOVIE_FILE.toString() + "=" + PATH_TO_JSON_MOVIE_FILE,
+            "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_MOVIE_FILE,
             "--" + SCHEDULE_FILE.toString() + "=" + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
 
     public static final String[] TEST_ARGS =
             {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
-            "--" + MOVIE_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
+            "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
             "--" + SCHEDULE_FILE.toString() + "=" + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
 
     public static final String[] TEST_ARGS_MISSING_MOVIE_PATH =
@@ -38,25 +38,40 @@ public class TestConstants {
             "--" + SCHEDULE_FILE.toString() + "=" + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
 
     public static final String[] TEST_ARGS_MISSING_HOURS_PATH =
-            {"--" + MOVIE_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
+            {"--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
             "--" + SCHEDULE_FILE.toString() + "=" + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
 
     public static final String[] TEST_ARGS_MISSING_OUT_FILE_PATH =
             {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
-            "--" + MOVIE_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE};
+            "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE};
 
     public static final String[] TEST_ARGS_INVALID_MOVIES_FILE_PATH =
             {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
-                    "--" + MOVIE_FILE.toString() + "=/some/invalid/path/bogus.file",
+                    "--" + MOVIES_FILE.toString() + "=/some/invalid/path/bogus.file",
                     "--" + SCHEDULE_FILE.toString() + "=" + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
 
     public static final String[] TEST_ARGS_INVALID_HOURS_FILE_PATH =
             {"--" + HOURS_FILE.toString() + "=/some/invalid/path/bogus.file",
-                    "--" + MOVIE_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
+                    "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
                     "--" + SCHEDULE_FILE.toString() + "=" + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
 
     public static final String[] TEST_ARGS_INVALID_SCHEDULE_OUTPUT_FILE_PATH =
             {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
-                    "--" + MOVIE_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
+                    "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
                     "--" + SCHEDULE_FILE.toString() + "=/some/invalid/path/bogus.file"};
+
+    public static final String[] TEST_ARGS_INVALID_MISSING_VALUE_FOR_SCHEDULE_FILE =
+            {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
+                    "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
+                    "--" + SCHEDULE_FILE.toString() + "="};
+
+    public static final String[] TEST_ARGS_INVALID_MISSING_VALUE_FOR_HOURS_FILE =
+            {"--" + HOURS_FILE.toString() + "=",
+                    "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
+                    "--" + SCHEDULE_FILE.toString() + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
+
+    public static final String[] TEST_ARGS_INVALID_MISSING_VALUE_FOR_MOVIES_FILE =
+            {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
+                    "--" + MOVIES_FILE.toString() + "=",
+                    "--" + SCHEDULE_FILE.toString() + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
 }

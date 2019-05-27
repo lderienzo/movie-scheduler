@@ -1,7 +1,7 @@
 package com.tandem.showtime.moviescheduler;
 
 import static com.tandem.showtime.moviescheduler.ArgOption.HOURS_FILE;
-import static com.tandem.showtime.moviescheduler.ArgOption.MOVIE_FILE;
+import static com.tandem.showtime.moviescheduler.ArgOption.MOVIES_FILE;
 import static com.tandem.showtime.moviescheduler.ArgOption.SCHEDULE_FILE;
 import static com.tandem.showtime.moviescheduler.TestConstants.PATH_TO_TEST_SCHEDULE_OUTPUT_FILE;
 import static com.tandem.showtime.moviescheduler.TestConstants.TEST_ARGS;
@@ -32,7 +32,7 @@ public class SchedulePdfWriterServiceTest {
         String hoursOptionName = HOURS_FILE.toString();
         when(args.containsOption(hoursOptionName)).thenReturn(true);
 
-        String moviesOptionName = MOVIE_FILE.toString();
+        String moviesOptionName = MOVIES_FILE.toString();
         when(args.containsOption(moviesOptionName)).thenReturn(true);
 
         String scheduleOutputFileOptionName = SCHEDULE_FILE.toString();
