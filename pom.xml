@@ -11,6 +11,7 @@
 	<groupId>com.tandem.showtime</groupId>
 	<artifactId>movie-scheduler</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
 	<name>movie-scheduler</name>
 	<description>Code challenge project for Tandem</description>
 

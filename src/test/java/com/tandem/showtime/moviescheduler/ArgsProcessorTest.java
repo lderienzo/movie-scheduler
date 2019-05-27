@@ -23,13 +23,14 @@ public class ArgsProcessorTest {
         when(givenMockArgs.containsOption(HOURS_FILE.toString())).thenReturn(true);
         when(givenMockArgs.containsOption(MOVIES_FILE.toString())).thenReturn(true);
         when(givenMockArgs.containsOption(SCHEDULE_FILE.toString())).thenReturn(true);
-        when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS);
-        argsProcessor = new ArgsProcessor(givenMockArgs);
     }
 
     @Test
     public void testGetHours_hoursProperlyCreatedWhenAllArgsPresentAndValid() {
+        when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS);
         commonGivenWhenSetup();
+        argsProcessor = new ArgsProcessor(givenMockArgs);
+
 
         // then
         Hours hours = argsProcessor.getHours();
@@ -46,7 +47,9 @@ public class ArgsProcessorTest {
 
     @Test
     public void testGetMovies_moviesProperlyCreatedWhenAllArgsPresentAndValid() {
+        when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS);
         commonGivenWhenSetup();
+        argsProcessor = new ArgsProcessor(givenMockArgs);
 
         // then
         Movies movies = argsProcessor.getMovies();
@@ -61,7 +64,9 @@ public class ArgsProcessorTest {
 
     @Test
     public void testGetOutFilePath_outFileProperlySetWhenAllArgsPresentAndValid() {
+        when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS);
         commonGivenWhenSetup();
+        argsProcessor = new ArgsProcessor(givenMockArgs);
 
         // then
         String outFilePath = argsProcessor.getOutFilePath();
@@ -72,8 +77,7 @@ public class ArgsProcessorTest {
     @Test(expected = ArgsProcessorException.class)
     public void testGetMovies_exceptionThrownWhenOptionMissing() {
         when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS_MISSING_MOVIE_PATH);
-        String outFileOptionName = MOVIES_FILE.toString();
-        when(givenMockArgs.containsOption(outFileOptionName)).thenReturn(true);
+        commonGivenWhenSetup();
         argsProcessor = new ArgsProcessor(givenMockArgs);
 
         argsProcessor.getMovies();
@@ -82,8 +86,7 @@ public class ArgsProcessorTest {
     @Test(expected = ArgsProcessorException.class)
     public void testGetHours_exceptionThrownWhenOptionMissing() {
         when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS_MISSING_HOURS_PATH);
-        String outFileOptionName = HOURS_FILE.toString();
-        when(givenMockArgs.containsOption(outFileOptionName)).thenReturn(true);
+        commonGivenWhenSetup();
         argsProcessor = new ArgsProcessor(givenMockArgs);
 
         argsProcessor.getHours();
@@ -91,9 +94,8 @@ public class ArgsProcessorTest {
 
     @Test(expected = ArgsProcessorException.class)
     public void testGetOutFilePath_exceptionThrownWhenOptionMissing() {
-        when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS_MISSING_OUT_FILE_PATH);
-        String outFileOptionName = SCHEDULE_FILE.toString();
-        when(givenMockArgs.containsOption(outFileOptionName)).thenReturn(true);
+        when(givenMockArgs.containsOption(HOURS_FILE.toString())).thenReturn(true);
+        when(givenMockArgs.containsOption(MOVIES_FILE.toString())).thenReturn(true);
         argsProcessor = new ArgsProcessor(givenMockArgs);
 
         argsProcessor.getOutFilePath();
@@ -102,8 +104,7 @@ public class ArgsProcessorTest {
     @Test(expected = ArgsProcessorException.class)
     public void testGetMovies_exceptionThrownWhenInvalidFilePath() {
         when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS_INVALID_MOVIES_FILE_PATH);
-        String outFileOptionName = MOVIES_FILE.toString();
-        when(givenMockArgs.containsOption(outFileOptionName)).thenReturn(true);
+        commonGivenWhenSetup();
         argsProcessor = new ArgsProcessor(givenMockArgs);
 
         argsProcessor.getMovies();
@@ -112,8 +113,7 @@ public class ArgsProcessorTest {
     @Test(expected = ArgsProcessorException.class)
     public void testGetHours_exceptionThrownWhenInvalidFilePath() {
         when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS_INVALID_HOURS_FILE_PATH);
-        String outFileOptionName = HOURS_FILE.toString();
-        when(givenMockArgs.containsOption(outFileOptionName)).thenReturn(true);
+        commonGivenWhenSetup();
         argsProcessor = new ArgsProcessor(givenMockArgs);
 
         argsProcessor.getHours();
@@ -122,8 +122,7 @@ public class ArgsProcessorTest {
     @Test(expected = ArgsProcessorException.class)
     public void testGetOutFilePath_exceptionThrownWhenInvalidFilePath() {
         when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS_INVALID_SCHEDULE_OUTPUT_FILE_PATH);
-        String outFileOptionName = SCHEDULE_FILE.toString();
-        when(givenMockArgs.containsOption(outFileOptionName)).thenReturn(true);
+        commonGivenWhenSetup();
         argsProcessor = new ArgsProcessor(givenMockArgs);
 
         argsProcessor.getOutFilePath();
@@ -132,8 +131,7 @@ public class ArgsProcessorTest {
     @Test(expected = ArgsProcessorException.class)
     public void testGetOutFilePath_exceptionThrownWhenValueIsMissing() {
         when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS_INVALID_MISSING_VALUE_FOR_SCHEDULE_FILE);
-        String outFileOptionName = SCHEDULE_FILE.toString();
-        when(givenMockArgs.containsOption(outFileOptionName)).thenReturn(true);
+        commonGivenWhenSetup();
         argsProcessor = new ArgsProcessor(givenMockArgs);
 
         argsProcessor.getOutFilePath();
@@ -142,8 +140,7 @@ public class ArgsProcessorTest {
     @Test(expected = ArgsProcessorException.class)
     public void testGetHours_exceptionThrownWhenValueIsMissing() {
         when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS_INVALID_MISSING_VALUE_FOR_HOURS_FILE);
-        String outFileOptionName = HOURS_FILE.toString();
-        when(givenMockArgs.containsOption(outFileOptionName)).thenReturn(true);
+        commonGivenWhenSetup();
         argsProcessor = new ArgsProcessor(givenMockArgs);
 
         argsProcessor.getHours();
@@ -152,8 +149,7 @@ public class ArgsProcessorTest {
     @Test(expected = ArgsProcessorException.class)
     public void testGetMovies_exceptionThrownWhenValueIsMissing() {
         when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS_INVALID_MISSING_VALUE_FOR_MOVIES_FILE);
-        String outFileOptionName = MOVIES_FILE.toString();
-        when(givenMockArgs.containsOption(outFileOptionName)).thenReturn(true);
+        commonGivenWhenSetup();
         argsProcessor = new ArgsProcessor(givenMockArgs);
 
         argsProcessor.getMovies();
