@@ -21,7 +21,9 @@ public class TestConstants {
     public static String PATH_TO_JSON_MOVIE_FILE =
             new TestFileUtils().getAbsolutePathOfResourceFile(MOVIES_JSON_FILE_NAME);
 
-    public static final String PATH_TO_TEST_SCHEDULE_OUTPUT_FILE = "/Users/lderienzo/Downloads/movie_schedule.pdf";
+    public static final String SCHEDULE_OUT_FILE_NAME = "movie_schedule.pdf";
+
+    public static final String PATH_TO_TEST_SCHEDULE_OUTPUT_FILE = "/Users/lderienzo/Downloads/" + SCHEDULE_OUT_FILE_NAME;
 
     public static final String[] ARGS =
             {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
@@ -33,17 +35,10 @@ public class TestConstants {
             "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
             "--" + SCHEDULE_FILE.toString() + "=" + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
 
-    public static final String[] TEST_ARGS_MISSING_MOVIE_PATH =
+    public static final String[] TEST_ARGS_WITH_JUST_OUT_FILE_NAME =
             {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
-            "--" + SCHEDULE_FILE.toString() + "=" + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
-
-    public static final String[] TEST_ARGS_MISSING_HOURS_PATH =
-            {"--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
-            "--" + SCHEDULE_FILE.toString() + "=" + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
-
-    public static final String[] TEST_ARGS_MISSING_OUT_FILE_PATH =
-            {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
-            "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE};
+                    "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
+                    "--" + SCHEDULE_FILE.toString() + "=" + SCHEDULE_OUT_FILE_NAME};
 
     public static final String[] TEST_ARGS_INVALID_MOVIES_FILE_PATH =
             {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,

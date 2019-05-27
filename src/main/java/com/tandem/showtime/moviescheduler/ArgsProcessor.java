@@ -184,8 +184,8 @@ public class ArgsProcessor {
             extractDirectoryPortionOfPath();
             determineIfDirectoryIsValid();
         }
-        else
-            throw new ArgsProcessorException("The specified file path for " + SCHEDULE_FILE + " contains the incorrect system name separator symbol.");
+//        else
+//            throw new ArgsProcessorException("The specified file path for " + SCHEDULE_FILE + " contains the incorrect system name separator symbol.");
     }
 
     private String systemDependentDefaultNameSeparator() {
