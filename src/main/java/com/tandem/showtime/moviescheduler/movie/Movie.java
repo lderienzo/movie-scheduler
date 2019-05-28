@@ -22,8 +22,8 @@ public class Movie {
     private String lengthAsMinutesString;
     private String scheduleTitle;
     private String error;
-    private List<Showing> weekdayShowings = new ArrayList<>();
-    private List<Showing> weekendShowings = new ArrayList<>();
+    private final List<Showing> weekdayShowings = new ArrayList<>();
+    private final List<Showing> weekendShowings = new ArrayList<>();
     private static final Pattern NUMBER_PATTERN = Pattern.compile("(\\d{2,3})?");
     private static final Logger LOG = LoggerFactory.getLogger(Movie.class);
 

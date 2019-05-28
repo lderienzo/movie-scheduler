@@ -25,10 +25,10 @@ import com.tandem.showtime.moviescheduler.exceptions.SchedulePdfWriterException;
 
 public class SchedulePdfWriter {
     private String error;
-    private Schedule weekdaySchedule;
-    private Schedule weekendSchedule;
+    private final Schedule weekdaySchedule;
+    private final Schedule weekendSchedule;
     private static final String TANDEM_CINEMAS = "Tandem Cinemas Now Showing";
-    private static Logger LOG = LoggerFactory.getLogger(SchedulePdfWriter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SchedulePdfWriter.class);
     private static final DateTimeFormatter AM_PM_FORMATTER = DateTimeFormat.forPattern("h:mm a");
     private static final Font TANDEM_CINEMAS_NOW_SHOWING_FONT = FontFactory.getFont(FontFactory.HELVETICA, 18, Font.BOLD, BaseColor.GRAY);
     private static final Font MOVIE_TITLE_HEADING_FONT = FontFactory.getFont(FontFactory.HELVETICA, 11, Font.BOLD, BaseColor.BLACK);

@@ -6,7 +6,7 @@ import java.util.List;
 import com.tandem.showtime.moviescheduler.movie.Movie;
 
 public class Schedule {
-    private List<Movie> schedule;
+    private final List<Movie> schedule;
 
     public Schedule(int showings) {
         schedule = new ArrayList<>(showings);

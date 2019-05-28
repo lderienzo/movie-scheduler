@@ -4,7 +4,6 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import org.junit.Test;
 
-import com.tandem.showtime.moviescheduler.movie.Movie;
 
 public class MovieTest {
     private Movie movie;

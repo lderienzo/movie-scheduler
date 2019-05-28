@@ -20,7 +20,7 @@ import com.tandem.showtime.moviescheduler.movie.Movies;
 public class ArgsProcessorTest {
 
     private ArgsProcessor argsProcessor;
-    private ApplicationArguments givenMockArgs = mock(ApplicationArguments.class);
+    private final ApplicationArguments givenMockArgs = mock(ApplicationArguments.class);
 
 
     public void commonGivenWhenSetup() {

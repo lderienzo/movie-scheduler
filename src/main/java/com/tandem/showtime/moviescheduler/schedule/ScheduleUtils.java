@@ -2,7 +2,7 @@ package com.tandem.showtime.moviescheduler.schedule;
 
 import org.joda.time.LocalTime;
 
-public class ScheduleUtils {
+class ScheduleUtils {
 
     public static LocalTime formatTimeForSchedule(LocalTime unformattedTime) {
         LocalTime easyToReadScheduleTime = null;

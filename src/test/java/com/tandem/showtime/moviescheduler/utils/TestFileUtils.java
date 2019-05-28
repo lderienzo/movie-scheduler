@@ -2,7 +2,7 @@ package com.tandem.showtime.moviescheduler.utils;
 
 import java.io.File;
 
-public class TestFileUtils {
+class TestFileUtils {
 
      public String getAbsolutePathOfResourceFile(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();

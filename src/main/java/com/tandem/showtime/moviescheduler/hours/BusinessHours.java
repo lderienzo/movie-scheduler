@@ -123,15 +123,15 @@ public class BusinessHours extends RuntimeException {
     }
 
     class BusinessHour {
-        private String hourWithAmPm;
-        private String amPm;
+        private final String hourWithAmPm;
+        private final String amPm;
 
         BusinessHour(String hourStr, String amPmStr) {
             hourWithAmPm = hourStr;
             amPm = amPmStr;
         }
 
-        public LocalTime getLocalTimeRepresentation() {
+        private LocalTime getLocalTimeRepresentation() {
             return convertHourStringToLocalTimeObject();
         }
 

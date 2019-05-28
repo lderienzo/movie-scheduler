@@ -113,7 +113,7 @@ public class ArgsProcessor {
         return argOptionNameAndValue.length != 2;
     }
 
-    public void checkIfHoursFilePathValueIsValid() {
+    private void checkIfHoursFilePathValueIsValid() {
         if (filePathIsNotValid(argOptionNameAndValue[INDEX_FOR_OPTION_VALUE])) {
             printUsageToConsole();
             logError(INVALID_FILE_PATH_ERROR_MSG_PREFIX + HOURS_FILE.toString());

@@ -5,7 +5,7 @@ public enum ArgOption {
     MOVIES_FILE("movies_file"),
     SCHEDULE_FILE("schedule_file");
 
-    private String argName;
+    private final String argName;
 
     ArgOption(String argName) {
         this.argName = argName;
