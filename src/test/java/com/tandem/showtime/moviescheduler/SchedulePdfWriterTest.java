@@ -9,22 +9,17 @@ import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.FileNotFoundException;
 
 import org.junit.Test;
 import org.springframework.boot.ApplicationArguments;
 
-import com.itextpdf.text.DocumentException;
 
-public class SchedulePdfWriterServiceTest {
-
-    private ArgsProcessor argsProcessor;
-    private ApplicationArguments args;
+public class SchedulePdfWriterTest {
 
     @Test
-    public void testWriteSchedule() throws FileNotFoundException, DocumentException {
+    public void testWriteSchedule() {
         // given
-        args = mock(ApplicationArguments.class);
+        ApplicationArguments args = mock(ApplicationArguments.class);
 
         when(args.getSourceArgs()).thenReturn(TEST_ARGS);
         String hoursOptionName = HOURS_FILE.toString();
@@ -33,7 +28,7 @@ public class SchedulePdfWriterServiceTest {
         when(args.containsOption(moviesOptionName)).thenReturn(true);
         String scheduleOutputFileOptionName = SCHEDULE_FILE.toString();
         when(args.containsOption(scheduleOutputFileOptionName)).thenReturn(true);
-        argsProcessor = new ArgsProcessor(args);
+        ArgsProcessor argsProcessor = new ArgsProcessor(args);
 
 
         Hours hours = argsProcessor.getHours();
@@ -63,7 +58,9 @@ public class SchedulePdfWriterServiceTest {
         assertThat(weekdaySchedule.moviesPlaying().get(1).weekendShowings()).hasSize(4);
 
         // when
-        SchedulePdfWriterService schedulePdfWriterService = new SchedulePdfWriterService(weekdaySchedule, weekendSchedule);
-        schedulePdfWriterService.writeSchedules(PATH_TO_TEST_SCHEDULE_OUTPUT_FILE);
+        SchedulePdfWriter schedulePdfWriter = new SchedulePdfWriter(weekdaySchedule, weekendSchedule);
+        schedulePdfWriter.writeSchedules(PATH_TO_TEST_SCHEDULE_OUTPUT_FILE);
+
+        // TODO: As part of test verification, read schedule from filesystem to ensure it was at least created. Not sure how to test formatting.
     }
 }

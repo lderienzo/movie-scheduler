@@ -3,7 +3,6 @@ package com.tandem.showtime.moviescheduler;
 import static com.tandem.showtime.moviescheduler.ArgOption.HOURS_FILE;
 import static com.tandem.showtime.moviescheduler.ArgOption.MOVIES_FILE;
 import static com.tandem.showtime.moviescheduler.ArgOption.SCHEDULE_FILE;
-import static com.tandem.showtime.moviescheduler.TestConstants.PATH_TO_TEST_SCHEDULE_OUTPUT_FILE;
 import static com.tandem.showtime.moviescheduler.TestConstants.TEST_ARGS;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;

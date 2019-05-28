@@ -15,34 +15,44 @@ import org.springframework.boot.ApplicationArguments;
 import com.google.common.base.Strings;
 
 public class ArgsProcessor {
-
+    private String error;
+    private String outFilePath;
+    private String moviesFilePath;
+    private String hoursFilePath;
     private ApplicationArguments args;
     private Hours hours = new Hours();
     private Movies movies = new Movies();
-    private String outFilePath = "";    // TODO: double-check if this initialization is necessary. trying to avoid potential NPE.
-    private String moviesFilePath = "";
-    private String hoursFilePath = "";
+    private int indexOfOptionInArgList;
     private String directoryPortionOfPath;
     private String[] argOptionNameAndValue;
-    private int indexOfOptionInArgList;
     private static final int INDEX_FOR_OPTION_VALUE = 1;
-    private static final String INVALID_FILE_PATH_MESSAGE_PREFIX = "Invalid file path for ";
+    private static final Logger LOG = LoggerFactory.getLogger(ArgsProcessor.class);
+    private static final String ERROR = "ERROR >>> ";
+    private static final String INVALID_FILE_PATH_ERROR_MSG_PREFIX = ERROR + "Invalid file path for ";
     private static final String USAGE_MESSAGE = "\nUsage:\n" + " \tcom.tandem.showtime.moviescheduler.Application " +
                                                     "--" + HOURS_FILE + "=<path_to_hours_json_file> " +
                                                     "--" + MOVIES_FILE + "=<path_to_movies_json_file> " +
                                                     "--" + SCHEDULE_FILE + "=<(may include directory path) new_file_name>\n";
-    private static final Logger LOG = LoggerFactory.getLogger(ArgsProcessor.class);
-
 
     public ArgsProcessor(ApplicationArguments args) {
-        LOG.info("*** BEGIN ARGS PROCESSING ***");
+        LOG.info("Begin argument processing...");
         if (allArgsPresent(args))
             this.args = args;
         else {
             printUsageToConsole();
-            throw new ArgsProcessorException("Unable to run application due to missing arguments.");
+            logError(ERROR + " missing required arguments.");
+            throw new ArgsProcessorException(error);
         }
-        LOG.info("*** END ARGS PROCESSING ***");
+        LOG.info("...end argument processing.");
+    }
+
+    private void logError(String errorMsg) {
+        setErrorMemberWithErrorMessage(errorMsg);
+        LOG.error(error);
+    }
+
+    private void setErrorMemberWithErrorMessage(String errorMsg) {
+        error = errorMsg;
     }
 
     private boolean allArgsPresent(ApplicationArguments args) {
@@ -56,9 +66,7 @@ public class ArgsProcessor {
     }
 
     public Hours getHours() {
-        // TODO: this smells of a single responsibility principle violation. arg processing should not
-        // involve loading files, it should just parse out file path info and pass to something else to load the file.
-        loadHours();
+        loadHours();  // TODO: this smells of a single responsibility principle violation.
         return hours;
     }
 
@@ -88,7 +96,8 @@ public class ArgsProcessor {
         argOptionNameAndValue = splitOptionNameAndValue(indexOfOptionInArgList);
         if (optionValueIsMissing()) {
             printUsageToConsole();
-            throw new ArgsProcessorException("Missing option value for "+ argOption);
+            logError(ERROR + "missing required value for "+ argOption);
+            throw new ArgsProcessorException(error);
         }
     }
 
@@ -103,7 +112,8 @@ public class ArgsProcessor {
     public void checkIfHoursFilePathValueIsValid() {
         if (filePathIsNotValid(argOptionNameAndValue[INDEX_FOR_OPTION_VALUE])) {
             printUsageToConsole();
-            throw new ArgsProcessorException(INVALID_FILE_PATH_MESSAGE_PREFIX + HOURS_FILE.toString());
+            logError(INVALID_FILE_PATH_ERROR_MSG_PREFIX + HOURS_FILE.toString());
+            throw new ArgsProcessorException(error);
         }
     }
 
@@ -113,7 +123,7 @@ public class ArgsProcessor {
 
     private boolean filePathIsValid(String path) {
         File file = new File(path);
-        return file != null && file.isFile() && file.canRead();     // TODO: use isReadable(Path path)?
+        return file.isFile() && file.canRead();
     }
 
     private void setHoursFilePathWithValue() {
@@ -121,16 +131,16 @@ public class ArgsProcessor {
     }
 
     private void createHoursObjectFromJsonFile() {
-        deserializeHoursFileContents();
+        try {
+            deserializeHoursFileContents();
+        } catch(IOException e) {
+            logError(e.getMessage());
+            throw new ArgsProcessorException(error);
+        }
     }
 
-    private void deserializeHoursFileContents() {
-        try {
-            hours = JsonDeserializerForScheduler.getHours(hoursFilePath);
-        }
-        catch(IOException e) {
-            throw new ArgsProcessorException(e.getMessage());
-        }
+    private void deserializeHoursFileContents() throws IOException {
+        hours = JsonDeserializerForScheduler.getHours(hoursFilePath);
     }
 
     private void loadMovies() {
@@ -148,7 +158,8 @@ public class ArgsProcessor {
     private void checkIfMoviesFilePathValueIsValid() {
         if (filePathIsNotValid(argOptionNameAndValue[INDEX_FOR_OPTION_VALUE])) {
             printUsageToConsole();
-            throw new ArgsProcessorException(INVALID_FILE_PATH_MESSAGE_PREFIX + HOURS_FILE.toString());
+            logError(INVALID_FILE_PATH_ERROR_MSG_PREFIX + HOURS_FILE.toString());
+            throw new ArgsProcessorException(error);
         }
     }
 
@@ -157,14 +168,15 @@ public class ArgsProcessor {
     }
 
     private void createMoviesObjectFromJsonFile() {
-            deserializeMovieFileContents();
+        deserializeMovieFileContents();
     }
 
     private void deserializeMovieFileContents() {
         try {
             movies = JsonDeserializerForScheduler.getMovies(moviesFilePath);
         } catch (IOException e) {
-            throw new ArgsProcessorException(e.getMessage());
+            logError(e.getMessage());
+            throw new ArgsProcessorException(error);
         }
     }
 
@@ -184,8 +196,6 @@ public class ArgsProcessor {
             extractDirectoryPortionOfPath();
             determineIfDirectoryIsValid();
         }
-//        else
-//            throw new ArgsProcessorException("The specified file path for " + SCHEDULE_FILE + " contains the incorrect system name separator symbol.");
     }
 
     private String systemDependentDefaultNameSeparator() {
@@ -200,7 +210,9 @@ public class ArgsProcessor {
     private void determineIfDirectoryIsValid() {
         if (directoryDoesNotExist()) {
             clearOutFilePath();
-            throw new ArgsProcessorException("Directory portion of path specified for 'schedule_file' is invalid. Please re-enter.");
+            printUsageToConsole();
+            logError(ERROR + " invalid directory for " + SCHEDULE_FILE.toString());
+            throw new ArgsProcessorException(error);
         }
     }
 

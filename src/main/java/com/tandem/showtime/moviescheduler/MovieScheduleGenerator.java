@@ -2,12 +2,15 @@ package com.tandem.showtime.moviescheduler;
 
 
 import org.joda.time.LocalTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class MovieScheduleGenerator {
-    private static final int TIME_REQUIRED_FOR_PREVIEWS = 15;
-    private static final int TIME_REQUIRED_FOR_THEATRE_PREP = 20;
     private Movies movies;
+    private boolean isWeekday;
+    private Schedule weekdaySchedule;
+    private Schedule weekendSchedule;
     private WeekdayHours weekdayHours;
     private WeekendHours weekendHours;
     private LocalTime currentTime;
@@ -17,9 +20,9 @@ public class MovieScheduleGenerator {
     private LocalTime whenLastWeekdayShowingCanEnd;
     private LocalTime startTimeForWeekendShowings;
     private LocalTime whenLastWeekendShowingCanEnd;
-    private Schedule weekdaySchedule;
-    private Schedule weekendSchedule;
-    private boolean isWeekday;
+    private static final Logger LOG = LoggerFactory.getLogger(MovieScheduleGenerator.class);
+    private static final int TIME_REQUIRED_FOR_PREVIEWS = 15;
+    private static final int TIME_REQUIRED_FOR_THEATRE_PREP = 20;
 
     public MovieScheduleGenerator(Hours theatreHours, Movies moviesPlaying) {
         setArgs(moviesPlaying);
@@ -71,18 +74,21 @@ public class MovieScheduleGenerator {
 
     private Schedule determineMovieScheduleForWeekdayShowings() {
         isWeekday = true;
-        return determineMovieScheduleForShowings(weekdaySchedule, whenLastWeekdayShowingCanEnd,
-                                                 startTimeForWeekdayShowings, weekdayClosingTime);
+        return determineMovieScheduleForShowings(whenLastWeekdayShowingCanEnd, startTimeForWeekdayShowings, weekdayClosingTime);
     }
 
     public void generateSchedules() {
+        LOG.info("Begin schedule generation...");
         weekdaySchedule = determineMovieScheduleForWeekdayShowings();
         weekendSchedule = determineMovieScheduleForWeekendShowings();
+        LOG.info("...end schedule generation.");
     }
 
-    private Schedule determineMovieScheduleForShowings(Schedule schedule, LocalTime whenLastShowingCanEnd,
-                                                       LocalTime startTimeForAllShowings, LocalTime closingTime) {
-        schedule = new Schedule(movies.playing().size());
+    private Schedule determineMovieScheduleForShowings(LocalTime whenLastShowingCanEnd,
+                                                       LocalTime startTimeForAllShowings,
+                                                       LocalTime closingTime) {
+
+        Schedule schedule = new Schedule(movies.playing().size());
         for (Movie movie : movies.playing()) {
             currentTime = whenLastShowingCanEnd;
             while (true) {
@@ -97,8 +103,7 @@ public class MovieScheduleGenerator {
                     movie.addWeekdayShowing(new Showing(scheduledStartTime, scheduledEndTime));
                 else
                     movie.addWeekendShowing(new Showing(scheduledStartTime, scheduledEndTime));
-                LocalTime startTimeForRequiredPreviews = determineStartTimeForRequiredPreviews(scheduledStartTime);
-                currentTime = startTimeForRequiredPreviews;
+                currentTime = determineStartTimeForRequiredPreviews(scheduledStartTime);
             }
             schedule.moviesPlaying().add(movie);
         }
@@ -122,8 +127,7 @@ public class MovieScheduleGenerator {
     }
 
     private LocalTime determineScheduledShowingStartTime(LocalTime latestTimeLastShowingCanStart) {
-        LocalTime scheduledShowingStartTime = makeStartTimeEasyToReadForSchedule(latestTimeLastShowingCanStart);
-        return scheduledShowingStartTime;
+        return makeStartTimeEasyToReadForSchedule(latestTimeLastShowingCanStart);
     }
 
     private LocalTime makeStartTimeEasyToReadForSchedule(LocalTime latestTimeLastShowingCanStart) {
@@ -140,8 +144,7 @@ public class MovieScheduleGenerator {
 
     private Schedule determineMovieScheduleForWeekendShowings() {
         isWeekday = false;
-        return determineMovieScheduleForShowings(weekendSchedule, whenLastWeekendShowingCanEnd,
-                                                 startTimeForWeekendShowings, weekendClosingTime);
+        return determineMovieScheduleForShowings(whenLastWeekendShowingCanEnd, startTimeForWeekendShowings, weekendClosingTime);
     }
 
     public Schedule getWeekdaySchedule() {

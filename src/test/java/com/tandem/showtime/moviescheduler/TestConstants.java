@@ -4,8 +4,6 @@ import static com.tandem.showtime.moviescheduler.ArgOption.HOURS_FILE;
 import static com.tandem.showtime.moviescheduler.ArgOption.MOVIES_FILE;
 import static com.tandem.showtime.moviescheduler.ArgOption.SCHEDULE_FILE;
 
-
-// TODO:  refactor this somehow.
 public class TestConstants {
 
     private static final String HOURS_JSON_FILE_NAME = "hours.json";

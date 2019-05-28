@@ -32,7 +32,7 @@ public class MovieTest {
     }
 
     @Test
-    public void testTitleWithRatingForSchedule_PG_13Rating() {
+    public void testTitleWithRatingForSchedule_PG_13rating() {
         // given
         movie = new Movie("The Matrix (1999)", "Rated PG-13.", "136 minutes");
 

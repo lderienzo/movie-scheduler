@@ -4,107 +4,29 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.joda.time.LocalTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Strings;
-// TODO: clean up
+
 public class BusinessHours extends RuntimeException {
-    private static final int MINUTES_REQURIED_TILL_FIRST_SHOWING = 15;
-    private static final String HOUR_PATTERN = "(\\d{1,2}(?:\\:\\d{2})?)";
-    private static final Pattern pattern = Pattern.compile(HOUR_PATTERN);
     private String days;
     private String hours;
-    private String opening;
-    private String closing;
+    private String error;
     private LocalTime openingLocalTime;
     private LocalTime closingLocalTime;
-    boolean isOpening = true;
+    private static final int MINUTES_REQUIRED_TILL_FIRST_SHOWING = 15;
+    private static final String ERROR_PROCESSING_HOURS_MSG = "ERROR >>> error processing business hours.";
+    private static final Logger LOG = LoggerFactory.getLogger(BusinessHours.class);
+
 
     public BusinessHours(String days, String hours) {
-        setDaysAndHours(days, hours);
-        splitHoursIntoOpeningAndClosingTimes();
+        setDaysAndHoursMembers(days, hours);
+        convertBusinessHoursToLocalDateTimeObjects();
     }
 
-    private void setDaysAndHours(String days, String hours) {
+    private void setDaysAndHoursMembers(String days, String hours) {
         this.days = days;
-        this.hours = hours;
-    }
-
-    private void splitHoursIntoOpeningAndClosingTimes() {
-        extractOpeningAndClosingStringsWithAmOrPM();
-        convertOpeningHourToLocalTime();
-        isOpening = false;
-        convertClosingHourToLocalTime();
-    }
-
-    private void extractOpeningAndClosingStringsWithAmOrPM() {
-        opening = extractHourWith(hours);
-        // can use opening as a match to replace all occurrences, then use regex to look for numbers. if no numbers then they where the same number
-        String hoursWithOpeningTimeRemoved = hours.replaceAll(opening, "");
-
-        Pattern hoursWithOpeningTimeRemovedPattern = Pattern.compile("\\d{2}");
-        Matcher hoursWithOpeningTimeRemovedMatcher = hoursWithOpeningTimeRemovedPattern.matcher(hoursWithOpeningTimeRemoved);
-        // hours DO contain the same number for opening and closing times
-        if (!hoursWithOpeningTimeRemovedMatcher.find()) {  // no hour numbers present after replace, we have the same number for closing as we do opening.
-            closing = extractHourWith(opening);
-        }
-        else { // hour number present after replace. hours DO NOT contain the same number for opening and closing
-            closing = extractHourWith(hoursWithOpeningTimeRemoved);
-        }
-    }
-
-    private void convertOpeningHourToLocalTime() {
-        convertHourToLocalTime(opening);
-    }
-
-    private void convertClosingHourToLocalTime() {
-        convertHourToLocalTime(closing);
-    }
-
-    private String extractHourWith(String hours) {
-        Matcher matcher = pattern.matcher(hours.trim().toLowerCase());
-
-        String extractedHour = "";
-        if (matcher.find())
-            extractedHour = matcher.group(1);
-
-        return extractedHour;
-    }
-
-    private void convertHourToLocalTime(String hour) {
-
-        if (!Strings.isNullOrEmpty(hour)) {
-
-            int hourInt = 0;
-            int minuteInt = 0;
-            if (hour.contains(":")) {
-                // split closing hour and minutes
-                String[] splitHour = hour.split(":");
-                if (splitHour != null && splitHour.length == 2) {
-                    String hours = splitHour[0];
-                    String minutes = splitHour[1];
-
-                    if (!Strings.isNullOrEmpty(hours)) {
-                        hourInt = Integer.parseInt(hours);
-                    }
-
-                    if (!Strings.isNullOrEmpty(minutes)) {
-                        minuteInt = Integer.parseInt(minutes);
-                    }
-                }
-            }
-            else {
-                hourInt = Integer.parseInt(hour);
-            }
-
-            if (isOpening) {
-                openingLocalTime = new LocalTime(hourInt, minuteInt);
-            } else {
-                int _24hourTime = 0;
-                if (hourInt != 12)
-                    _24hourTime = hourInt + 12;
-                closingLocalTime = new LocalTime(_24hourTime, minuteInt);
-            }
-        }
+        this.hours = hours.toLowerCase();
     }
 
     public LocalTime opening() {
@@ -116,6 +38,140 @@ public class BusinessHours extends RuntimeException {
     }
 
     public LocalTime startTimeForAllShowings() {
-        return openingLocalTime.plusMinutes(MINUTES_REQURIED_TILL_FIRST_SHOWING);
+        return openingLocalTime.plusMinutes(MINUTES_REQUIRED_TILL_FIRST_SHOWING);
+    }
+
+    // TODO: clean this up
+    private void convertBusinessHoursToLocalDateTimeObjects() {
+        String regExToSeparateBusinessHours = "((\\d{1,2}(?:\\:\\d{2})?)\\s*(am|pm))+";
+        Pattern patternToSeparateBusinessHours = Pattern.compile(regExToSeparateBusinessHours);
+        Matcher matcherToFindSeparateBusinessHours = patternToSeparateBusinessHours.matcher(hours);
+        String openingHourWithAmPmValue = "";
+        String closingHourWithAmPmValue = "";
+        if (matcherToFindSeparateBusinessHours.find())
+            openingHourWithAmPmValue = matcherToFindSeparateBusinessHours.group(0);
+        else {
+            logError(ERROR_PROCESSING_HOURS_MSG);
+            throw new MovieException(error);
+        }
+
+        String tempHours = hours;
+        String hoursWithClosingHoursRemaining = tempHours.replace(openingHourWithAmPmValue, "");
+        matcherToFindSeparateBusinessHours = patternToSeparateBusinessHours.matcher(hoursWithClosingHoursRemaining);
+        if (matcherToFindSeparateBusinessHours.find())
+            closingHourWithAmPmValue = matcherToFindSeparateBusinessHours.group(1);
+        else {
+            logError(ERROR_PROCESSING_HOURS_MSG);
+            throw new MovieException(error);
+        }
+
+        String regExToSeparateHourFromAmPm = "(\\d{1,2}(?:\\:\\d{2})?)";
+        Pattern patternToSeparateHourFromAmPm = Pattern.compile(regExToSeparateHourFromAmPm);
+        Matcher matcherToFindOpeningHourValue = patternToSeparateHourFromAmPm.matcher(openingHourWithAmPmValue);
+        String openingHourValue = "";
+        if (matcherToFindOpeningHourValue.find())
+            openingHourValue = matcherToFindOpeningHourValue.group(0);
+        else {
+            logError(ERROR_PROCESSING_HOURS_MSG);
+            throw new MovieException(error);
+        }
+
+        Matcher matcherToFindClosingHourValue = patternToSeparateHourFromAmPm.matcher(closingHourWithAmPmValue);
+        String closingHourValue = "";
+        if (matcherToFindClosingHourValue.find())
+            closingHourValue = matcherToFindClosingHourValue.group(0);
+        else {
+            logError(ERROR_PROCESSING_HOURS_MSG);
+            throw new MovieException(error);
+        }
+
+        String regExToAmPmFromHour = "(am|pm)";
+        Pattern patternToSeparateAmPmFromHour = Pattern.compile(regExToAmPmFromHour);
+        Matcher matcherForFindingOpeningAmPmValue = patternToSeparateAmPmFromHour.matcher(openingHourWithAmPmValue);
+        String openingAmPmValue = "";
+        if (matcherForFindingOpeningAmPmValue.find())
+            openingAmPmValue = matcherForFindingOpeningAmPmValue.group(0);
+        else {
+            logError(ERROR_PROCESSING_HOURS_MSG);
+            throw new MovieException(error);
+        }
+
+        Matcher matcherForFindingClosingAmPmValue = patternToSeparateAmPmFromHour.matcher(closingHourWithAmPmValue);
+        String closingAmPmValue = "";
+        if (matcherForFindingClosingAmPmValue.find())
+            closingAmPmValue = matcherForFindingClosingAmPmValue.group(0);
+        else {
+            logError(ERROR_PROCESSING_HOURS_MSG);
+            throw new MovieException(error);
+        }
+
+        BusinessHour opening = new BusinessHour(openingHourValue, openingAmPmValue);
+        BusinessHour closing = new BusinessHour(closingHourValue, closingAmPmValue);
+        openingLocalTime = opening.getLocalTimeRepresentation();
+        closingLocalTime = closing.getLocalTimeRepresentation();
+    }
+
+    private void logError(String errorMsg) {
+        setErrorMemberWithErrorMessage(errorMsg);
+        LOG.error(error);
+    }
+
+    private void setErrorMemberWithErrorMessage(String errorMsg) {
+        error = errorMsg;
+    }
+
+    class BusinessHour {
+        private String hourWithAmPm;
+        private String amPm;
+
+        BusinessHour(String hourStr, String amPmStr) {
+            hourWithAmPm = hourStr;
+            amPm = amPmStr;
+        }
+
+        public LocalTime getLocalTimeRepresentation() {
+            return convertHourStringToLocalTimeObject();
+        }
+
+        private LocalTime convertHourStringToLocalTimeObject() {
+            String[] splitHour = splitHourIntoHoursAndMinutes(hourWithAmPm);
+            int hour = convertHourToInt(splitHour[0]);
+            hour = convertHourIntTo24HourFormat(hour);
+            int minute = 0;
+            if (hourContainsMinutes()) {
+                minute = convertMinuteToInt(splitHour[1]);
+            }
+            return new LocalTime(hour, minute);
+        }
+
+        private String[] splitHourIntoHoursAndMinutes(String hour) {
+            return hour.split(":");
+        }
+
+        private int convertHourToInt(String hour) {
+            return convertStringToInt(hour);
+        }
+
+        private int convertHourIntTo24HourFormat(int hour) {
+            if (hour == 12 && amPm.equals("am")) {
+                hour = 0;
+            }
+            else if (hour >= 1 && hour < 12 && amPm.equals("pm")) {
+                hour = hour + 12;
+            }
+            return hour;
+        }
+
+        private boolean hourContainsMinutes() {
+            return hourWithAmPm.contains(":");
+        }
+
+        private int convertMinuteToInt(String minute) {
+            return convertStringToInt(minute);
+        }
+
+        private int convertStringToInt(String stringToConvert) {
+            return Integer.parseInt(stringToConvert);
+        }
     }
 }

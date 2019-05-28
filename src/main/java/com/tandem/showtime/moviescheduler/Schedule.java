@@ -10,9 +10,6 @@ public class Schedule {
         schedule = new ArrayList<>(showings);
     }
 
-    public Schedule() {}
-
-    // TODO:  can we make this an immutable list?
     public List<Movie> moviesPlaying() {
         return schedule;
     }

@@ -12,9 +12,9 @@ public class BusinessHoursTest {
     private static final String WEEKEND_HOURS = "10:30 am–12 am";
     private BusinessHours businessHours;
 
+
     @Test
     public void testWeekdayHoursAreCorrect_withSameHourWithoutColon() {
-
         // given
         businessHours = new BusinessHours(WEEKDAY_DAYS, WEEKDAY_HOURS);
 
@@ -29,7 +29,6 @@ public class BusinessHoursTest {
 
     @Test
     public void testWeekendHoursAreCorrect_bothInAM() {
-
         // given
         businessHours = new BusinessHours(WEEKEND_DAYS, WEEKEND_HOURS);
 
@@ -44,7 +43,6 @@ public class BusinessHoursTest {
 
     @Test
     public void testWeekendHoursAreCorrect_bothInPMAndColon() {
-
         // given
         businessHours = new BusinessHours(WEEKDAY_DAYS, "1:30 pm–11:59 pm");
 
@@ -53,14 +51,12 @@ public class BusinessHoursTest {
         LocalTime closing = businessHours.closing();
 
         // then
-        assertThat(opening).isEqualTo(new LocalTime(1,30));
+        assertThat(opening).isEqualTo(new LocalTime(13,30));
         assertThat(closing).isEqualTo(new LocalTime(23,59));
     }
 
-
     @Test
     public void testWeekendHoursAreCorrect_bothHaveSameHourAndColon() {
-
         // given
         businessHours = new BusinessHours(WEEKDAY_DAYS, "1:30am–1:30 pm");
 
@@ -75,27 +71,25 @@ public class BusinessHoursTest {
 
     @Test
     public void testStartTimeForWeekdayShows() {
-
         // given
         businessHours = new BusinessHours(WEEKDAY_DAYS, WEEKDAY_HOURS);
 
         // when
-        LocalTime startTimeforWeekdayShows = businessHours.startTimeForAllShowings();
+        LocalTime startTimeForWeekdayShows = businessHours.startTimeForAllShowings();
 
         // then
-        assertThat(startTimeforWeekdayShows).isEqualTo(new LocalTime(11,15));
+        assertThat(startTimeForWeekdayShows).isEqualTo(new LocalTime(11,15));
     }
 
     @Test
     public void testStartTimeForWeekendShows() {
-
         // given
         businessHours = new BusinessHours(WEEKEND_DAYS, WEEKEND_HOURS);
 
         // when
-        LocalTime startTimeforWeekdayShows = businessHours.startTimeForAllShowings();
+        LocalTime startTimeForWeekdayShows = businessHours.startTimeForAllShowings();
 
         // then
-        assertThat(startTimeforWeekdayShows).isEqualTo(new LocalTime(10,45));
+        assertThat(startTimeForWeekdayShows).isEqualTo(new LocalTime(10,45));
     }
 }
