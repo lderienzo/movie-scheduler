@@ -7,6 +7,13 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.tandem.showtime.moviescheduler.arguments.ArgsProcessor;
+import com.tandem.showtime.moviescheduler.hours.Hours;
+import com.tandem.showtime.moviescheduler.movie.Movies;
+import com.tandem.showtime.moviescheduler.schedule.MovieScheduleGenerator;
+import com.tandem.showtime.moviescheduler.schedule.Schedule;
+import com.tandem.showtime.moviescheduler.schedule.SchedulePdfWriter;
+
 
 @SpringBootApplication
 public class Application implements ApplicationRunner {

@@ -1,4 +1,4 @@
-package com.tandem.showtime.moviescheduler;
+package com.tandem.showtime.moviescheduler.utils;
 
 import java.io.File;
 

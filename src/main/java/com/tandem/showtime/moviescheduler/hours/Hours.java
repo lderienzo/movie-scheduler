@@ -1,4 +1,4 @@
-package com.tandem.showtime.moviescheduler;
+package com.tandem.showtime.moviescheduler.hours;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

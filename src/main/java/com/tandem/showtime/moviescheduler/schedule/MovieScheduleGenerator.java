@@ -1,9 +1,16 @@
-package com.tandem.showtime.moviescheduler;
+package com.tandem.showtime.moviescheduler.schedule;
 
 
 import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.tandem.showtime.moviescheduler.hours.Hours;
+import com.tandem.showtime.moviescheduler.movie.Movie;
+import com.tandem.showtime.moviescheduler.movie.Movies;
+import com.tandem.showtime.moviescheduler.movie.Showing;
+import com.tandem.showtime.moviescheduler.hours.WeekdayHours;
+import com.tandem.showtime.moviescheduler.hours.WeekendHours;
 
 
 public class MovieScheduleGenerator {

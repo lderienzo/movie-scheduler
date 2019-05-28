@@ -1,4 +1,4 @@
-package com.tandem.showtime.moviescheduler;
+package com.tandem.showtime.moviescheduler.schedule;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -19,6 +19,9 @@ import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.tandem.showtime.moviescheduler.movie.Movie;
+import com.tandem.showtime.moviescheduler.movie.Showing;
+import com.tandem.showtime.moviescheduler.exceptions.SchedulePdfWriterException;
 
 public class SchedulePdfWriter {
     private String error;

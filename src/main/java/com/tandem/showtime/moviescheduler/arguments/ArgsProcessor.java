@@ -1,9 +1,9 @@
-package com.tandem.showtime.moviescheduler;
+package com.tandem.showtime.moviescheduler.arguments;
 
 
-import static com.tandem.showtime.moviescheduler.ArgOption.HOURS_FILE;
-import static com.tandem.showtime.moviescheduler.ArgOption.MOVIES_FILE;
-import static com.tandem.showtime.moviescheduler.ArgOption.SCHEDULE_FILE;
+import static com.tandem.showtime.moviescheduler.arguments.ArgOption.HOURS_FILE;
+import static com.tandem.showtime.moviescheduler.arguments.ArgOption.MOVIES_FILE;
+import static com.tandem.showtime.moviescheduler.arguments.ArgOption.SCHEDULE_FILE;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,6 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 
 import com.google.common.base.Strings;
+import com.tandem.showtime.moviescheduler.exceptions.ArgsProcessorException;
+import com.tandem.showtime.moviescheduler.hours.Hours;
+import com.tandem.showtime.moviescheduler.schedule.JsonDeserializerForScheduler;
+import com.tandem.showtime.moviescheduler.movie.Movies;
 
 public class ArgsProcessor {
     private String error;

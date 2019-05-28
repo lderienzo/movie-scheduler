@@ -1,4 +1,4 @@
-package com.tandem.showtime.moviescheduler;
+package com.tandem.showtime.moviescheduler.hours;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 import org.joda.time.LocalTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.tandem.showtime.moviescheduler.exceptions.MovieException;
 
 
 public class BusinessHours extends RuntimeException {

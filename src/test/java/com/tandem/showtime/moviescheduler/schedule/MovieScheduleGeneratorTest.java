@@ -1,9 +1,9 @@
-package com.tandem.showtime.moviescheduler;
+package com.tandem.showtime.moviescheduler.schedule;
 
-import static com.tandem.showtime.moviescheduler.ArgOption.HOURS_FILE;
-import static com.tandem.showtime.moviescheduler.ArgOption.MOVIES_FILE;
-import static com.tandem.showtime.moviescheduler.ArgOption.SCHEDULE_FILE;
-import static com.tandem.showtime.moviescheduler.TestConstants.TEST_ARGS;
+import static com.tandem.showtime.moviescheduler.arguments.ArgOption.HOURS_FILE;
+import static com.tandem.showtime.moviescheduler.arguments.ArgOption.MOVIES_FILE;
+import static com.tandem.showtime.moviescheduler.arguments.ArgOption.SCHEDULE_FILE;
+import static com.tandem.showtime.moviescheduler.utils.TestConstants.TEST_ARGS;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -13,6 +13,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.ApplicationArguments;
+
+import com.tandem.showtime.moviescheduler.arguments.ArgsProcessor;
+import com.tandem.showtime.moviescheduler.hours.Hours;
+import com.tandem.showtime.moviescheduler.movie.Movies;
 
 
 @RunWith(MockitoJUnitRunner.class)

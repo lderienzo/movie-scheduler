@@ -1,4 +1,4 @@
-package com.tandem.showtime.moviescheduler;
+package com.tandem.showtime.moviescheduler.schedule;
 
 import org.joda.time.LocalTime;
 

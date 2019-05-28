@@ -1,8 +1,8 @@
-package com.tandem.showtime.moviescheduler;
+package com.tandem.showtime.moviescheduler.utils;
 
-import static com.tandem.showtime.moviescheduler.ArgOption.HOURS_FILE;
-import static com.tandem.showtime.moviescheduler.ArgOption.MOVIES_FILE;
-import static com.tandem.showtime.moviescheduler.ArgOption.SCHEDULE_FILE;
+import static com.tandem.showtime.moviescheduler.arguments.ArgOption.HOURS_FILE;
+import static com.tandem.showtime.moviescheduler.arguments.ArgOption.MOVIES_FILE;
+import static com.tandem.showtime.moviescheduler.arguments.ArgOption.SCHEDULE_FILE;
 
 public class TestConstants {
 

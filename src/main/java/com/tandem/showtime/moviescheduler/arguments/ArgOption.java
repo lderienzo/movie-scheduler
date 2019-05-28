@@ -1,4 +1,4 @@
-package com.tandem.showtime.moviescheduler;
+package com.tandem.showtime.moviescheduler.arguments;
 
 public enum ArgOption {
     HOURS_FILE("hours_file"),

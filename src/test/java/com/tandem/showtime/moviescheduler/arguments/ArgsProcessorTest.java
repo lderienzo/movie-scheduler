@@ -1,7 +1,7 @@
-package com.tandem.showtime.moviescheduler;
+package com.tandem.showtime.moviescheduler.arguments;
 
-import static com.tandem.showtime.moviescheduler.ArgOption.*;
-import static com.tandem.showtime.moviescheduler.TestConstants.*;
+import static com.tandem.showtime.moviescheduler.arguments.ArgOption.*;
+import static com.tandem.showtime.moviescheduler.utils.TestConstants.*;
 import static org.assertj.core.api.Java6Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -11,6 +11,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.boot.ApplicationArguments;
+
+import com.tandem.showtime.moviescheduler.exceptions.ArgsProcessorException;
+import com.tandem.showtime.moviescheduler.hours.Hours;
+import com.tandem.showtime.moviescheduler.movie.Movies;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ArgsProcessorTest {

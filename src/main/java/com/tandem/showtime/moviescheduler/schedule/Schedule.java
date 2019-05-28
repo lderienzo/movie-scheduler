@@ -1,7 +1,9 @@
-package com.tandem.showtime.moviescheduler;
+package com.tandem.showtime.moviescheduler.schedule;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.tandem.showtime.moviescheduler.movie.Movie;
 
 public class Schedule {
     private List<Movie> schedule;
