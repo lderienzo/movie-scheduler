@@ -16,7 +16,7 @@ import com.tandem.showtime.moviescheduler.schedule.SchedulePdfWriter;
 
 
 @SpringBootApplication
-class Application implements ApplicationRunner {
+public class Application implements ApplicationRunner {
 	private static final Logger LOG = LoggerFactory.getLogger(Application.class);
 
 	public static void main(String[] args) {

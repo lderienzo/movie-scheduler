@@ -33,7 +33,7 @@ public class ArgsProcessor {
     private static final Logger LOG = LoggerFactory.getLogger(ArgsProcessor.class);
     private static final String ERROR = "ERROR >>> ";
     private static final String INVALID_FILE_PATH_ERROR_MSG_PREFIX = ERROR + "Invalid file path for ";
-    private static final String USAGE_MESSAGE = "\nUsage:\n" + " \tcom.tandem.showtime.moviescheduler.Application " +
+    private static final String USAGE_MESSAGE = "\nUsage:\n" + " \tmovie-scheduler.jar " +
                                                     "--" + HOURS_FILE + "=<path_to_hours_json_file> " +
                                                     "--" + MOVIES_FILE + "=<path_to_movies_json_file> " +
                                                     "--" + SCHEDULE_FILE + "=<(may include directory path) new_file_name>\n";

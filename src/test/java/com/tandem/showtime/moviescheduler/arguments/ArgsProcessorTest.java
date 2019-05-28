@@ -35,7 +35,6 @@ public class ArgsProcessorTest {
         commonGivenWhenSetup();
         argsProcessor = new ArgsProcessor(givenMockArgs);
 
-
         // then
         Hours hours = argsProcessor.getHours();
         assertThat(hours).isNotNull();
