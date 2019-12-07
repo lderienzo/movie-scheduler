@@ -18,6 +18,11 @@ import com.tandem.showtime.moviescheduler.hours.Hours;
 import com.tandem.showtime.moviescheduler.schedule.JsonDeserializerForScheduler;
 import com.tandem.showtime.moviescheduler.movie.Movies;
 
+
+/*
+What does ArgsProcessor do?
+it extracts each of the args from
+ */
 public class ArgsProcessor {
     private String error;
     private String outFilePath;

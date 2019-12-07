@@ -3,7 +3,8 @@ package com.tandem.showtime.moviescheduler.hours;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 import org.joda.time.LocalTime;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 
 import com.tandem.showtime.moviescheduler.hours.BusinessHours;
 

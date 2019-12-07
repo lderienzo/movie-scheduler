@@ -1,17 +1,14 @@
 package com.tandem.showtime.moviescheduler.schedule;
 
-import static com.tandem.showtime.moviescheduler.arguments.ArgOption.HOURS_FILE;
-import static com.tandem.showtime.moviescheduler.arguments.ArgOption.MOVIES_FILE;
-import static com.tandem.showtime.moviescheduler.arguments.ArgOption.SCHEDULE_FILE;
+import static com.tandem.showtime.moviescheduler.arguments.ArgOption.*;
 import static com.tandem.showtime.moviescheduler.utils.TestConstants.TEST_ARGS;
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import org.joda.time.LocalTime;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.ApplicationArguments;
 
 import com.tandem.showtime.moviescheduler.arguments.ArgsProcessor;
@@ -19,7 +16,7 @@ import com.tandem.showtime.moviescheduler.hours.Hours;
 import com.tandem.showtime.moviescheduler.movie.Movies;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MovieScheduleGeneratorTest {
     private ArgsProcessor argsProcessor;
     private ApplicationArguments givenMockArgs;

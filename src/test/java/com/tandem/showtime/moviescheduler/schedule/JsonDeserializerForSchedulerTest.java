@@ -6,7 +6,8 @@ import static org.assertj.core.api.Java6Assertions.*;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import com.tandem.showtime.moviescheduler.movie.Movie;
 import com.tandem.showtime.moviescheduler.movie.Movies;

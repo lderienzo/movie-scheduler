@@ -1,7 +1,8 @@
 package com.tandem.showtime.moviescheduler;
 
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import com.tandem.showtime.moviescheduler.utils.TestConstants;
 

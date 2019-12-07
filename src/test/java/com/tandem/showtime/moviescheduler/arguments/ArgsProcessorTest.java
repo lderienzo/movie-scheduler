@@ -7,16 +7,18 @@ import static org.mockito.Mockito.*;
 
 
 import org.joda.time.LocalTime;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.ApplicationArguments;
 
 import com.tandem.showtime.moviescheduler.exceptions.ArgsProcessorException;
 import com.tandem.showtime.moviescheduler.hours.Hours;
 import com.tandem.showtime.moviescheduler.movie.Movies;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ArgsProcessorTest {
 
     private ArgsProcessor argsProcessor;
@@ -89,70 +91,98 @@ public class ArgsProcessorTest {
         assertThat(outFilePath).isEqualTo(SCHEDULE_OUT_FILE_NAME);
     }
 
-    @Test(expected = ArgsProcessorException.class)
+    @Test
     public void testGetMovies_exceptionThrownWhenMovieFileOptionMissing() {
+        // given
         when(givenMockArgs.containsOption(HOURS_FILE.toString())).thenReturn(true);
         when(givenMockArgs.containsOption(MOVIES_FILE.toString())).thenReturn(false);
+        // when
         argsProcessor = new ArgsProcessor(givenMockArgs);
-
-        argsProcessor.getMovies();
+        // then
+        Assertions.assertThrows(ArgsProcessorException.class, () -> {
+            argsProcessor.getMovies();
+        });
     }
 
-    @Test(expected = ArgsProcessorException.class)
+    @Test
     public void testGetHours_exceptionThrownWhenHoursFileOptionMissing() {
+        // given
         when(givenMockArgs.containsOption(HOURS_FILE.toString())).thenReturn(false);
+        // when
         argsProcessor = new ArgsProcessor(givenMockArgs);
-
-        argsProcessor.getHours();
+        // then
+        Assertions.assertThrows(ArgsProcessorException.class, () -> {
+            argsProcessor.getHours();
+        });
     }
 
-    @Test(expected = ArgsProcessorException.class)
+    @Test
     public void testGetOutFilePath_exceptionThrownWhenScheduleOutPutFileOptionMissing() {
+        // given
         when(givenMockArgs.containsOption(HOURS_FILE.toString())).thenReturn(true);
         when(givenMockArgs.containsOption(MOVIES_FILE.toString())).thenReturn(true);
         when(givenMockArgs.containsOption(SCHEDULE_FILE.toString())).thenReturn(false);
+        // when
         argsProcessor = new ArgsProcessor(givenMockArgs);
-
-        argsProcessor.getOutFilePath();
+        // then
+        Assertions.assertThrows(ArgsProcessorException.class, () -> {
+            argsProcessor.getOutFilePath();
+        });
     }
 
-    @Test(expected = ArgsProcessorException.class)
+    @Test
     public void testGetMovies_exceptionThrownWhenMoviesFilePathIsInvalid() {
+        // given
         when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS_INVALID_MOVIES_FILE_PATH);
         commonGivenWhenSetup();
+        // when
         argsProcessor = new ArgsProcessor(givenMockArgs);
-
-        argsProcessor.getMovies();
+        // then
+        Assertions.assertThrows(ArgsProcessorException.class, () -> {
+            argsProcessor.getMovies();
+        });
     }
 
-    @Test(expected = ArgsProcessorException.class)
+    @Test
     public void testGetHours_exceptionThrownWhenHoursFilePathIsInvalid() {
+        // given
         when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS_INVALID_HOURS_FILE_PATH);
         commonGivenWhenSetup();
+        // when
         argsProcessor = new ArgsProcessor(givenMockArgs);
-
-        argsProcessor.getHours();
+        // then
+        Assertions.assertThrows(ArgsProcessorException.class, () -> {
+            argsProcessor.getHours();
+        });
     }
 
-    @Test(expected = ArgsProcessorException.class)
+    @Test
     public void testGetOutFilePath_exceptionThrownWhenOutputFilePathIsInvalid() {
+        // given
         when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS_INVALID_SCHEDULE_OUTPUT_FILE_PATH);
         commonGivenWhenSetup();
+        // when
         argsProcessor = new ArgsProcessor(givenMockArgs);
-
-        argsProcessor.getOutFilePath();
+        // then
+        Assertions.assertThrows(ArgsProcessorException.class, () -> {
+            argsProcessor.getOutFilePath();
+        });
     }
 
-    @Test(expected = ArgsProcessorException.class)
+    @Test
     public void testGetOutFilePath_exceptionThrownWhenValueForOutFilePathIsMissing() {
+        // given
         when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS_INVALID_MISSING_VALUE_FOR_SCHEDULE_FILE);
         commonGivenWhenSetup();
+        // when
         argsProcessor = new ArgsProcessor(givenMockArgs);
-
-        argsProcessor.getOutFilePath();
+        // then
+        Assertions.assertThrows(ArgsProcessorException.class, () -> {
+            argsProcessor.getOutFilePath();
+        });
     }
 
-    @Test(expected = ArgsProcessorException.class)
+    @Test
     public void testGetHours_exceptionThrownWhenValueForHoursFilePathIsMissing() {
         when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS_INVALID_MISSING_VALUE_FOR_HOURS_FILE);
         commonGivenWhenSetup();
@@ -161,12 +191,16 @@ public class ArgsProcessorTest {
         argsProcessor.getHours();
     }
 
-    @Test(expected = ArgsProcessorException.class)
+    @Test
     public void testGetMovies_exceptionThrownWhenValueForMoviesFilePathIsMissing() {
+        // given
         when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS_INVALID_MISSING_VALUE_FOR_MOVIES_FILE);
         commonGivenWhenSetup();
+        // when
         argsProcessor = new ArgsProcessor(givenMockArgs);
-
-        argsProcessor.getMovies();
+        // then
+        Assertions.assertThrows(ArgsProcessorException.class, () -> {
+            argsProcessor.getMovies();
+        });
     }
 }
