@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 
 import com.tandem.showtime.moviescheduler.exceptions.MovieException;
 
-
+// TODO -- MAJORLY REFACTOR THIS!
 public class BusinessHours extends RuntimeException {
     private String days;
     private String hours;
@@ -43,7 +43,7 @@ public class BusinessHours extends RuntimeException {
         return openingLocalTime.plusMinutes(MINUTES_REQUIRED_TILL_FIRST_SHOWING);
     }
 
-    // TODO: clean this up
+    // TODO: CLEAN THIS UP!
     private void convertBusinessHoursToLocalDateTimeObjects() {
         String regExToSeparateBusinessHours = "((\\d{1,2}(?:\\:\\d{2})?)\\s*(am|pm))+";
         Pattern patternToSeparateBusinessHours = Pattern.compile(regExToSeparateBusinessHours);

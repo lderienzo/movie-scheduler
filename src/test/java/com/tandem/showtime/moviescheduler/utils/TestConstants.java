@@ -33,6 +33,21 @@ public class TestConstants {
             "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
             "--" + SCHEDULE_FILE.toString() + "=" + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
 
+    public static final String[] TEST_ARGS_INVALID_MISSING_VALUE_FOR_HOURS_FILE =
+            {"--" + HOURS_FILE.toString() + "=",
+                    "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
+                    "--" + SCHEDULE_FILE.toString() + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
+
+    public static final String[] TEST_ARGS_INVALID_MISSING_HOURS_FILE_ARG =
+            {"--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
+                    "--" + SCHEDULE_FILE.toString() + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
+
+    public static final String[] TEST_ARGS_INVALID_ADDITIONAL_HOURS_FILE_ARG =
+            {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
+                    "--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
+                    "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
+                    "--" + SCHEDULE_FILE.toString() + "=" + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
+
     public static final String[] TEST_ARGS_WITH_JUST_OUT_FILE_NAME =
             {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
                     "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
@@ -58,13 +73,31 @@ public class TestConstants {
                     "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
                     "--" + SCHEDULE_FILE.toString() + "="};
 
-    public static final String[] TEST_ARGS_INVALID_MISSING_VALUE_FOR_HOURS_FILE =
-            {"--" + HOURS_FILE.toString() + "=",
-                    "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
-                    "--" + SCHEDULE_FILE.toString() + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
+
 
     public static final String[] TEST_ARGS_INVALID_MISSING_VALUE_FOR_MOVIES_FILE =
             {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
                     "--" + MOVIES_FILE.toString() + "=",
                     "--" + SCHEDULE_FILE.toString() + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
+
+    public static final String[] TEST_ARGS_INVALID_MISSING_MOVIES_FILE_ARG =
+            {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
+                    "--" + SCHEDULE_FILE.toString() + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
+
+
+    public static final String[] TEST_ARGS_INVALID_ADDITIONAL_MOVIES_FILE_ARG =
+            {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
+                    "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
+                    "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
+                    "--" + SCHEDULE_FILE.toString() + "=" + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
+
+    public static final String[] TEST_ARGS_INVALID_MISSING_SCHEDULE_FILE_ARG =
+            {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
+                    "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE};
+
+    public static final String[] TEST_ARGS_INVALID_ADDITIONAL_SCHEDULE_FILE_ARG =
+            {"--" + HOURS_FILE.toString() + "=" + PATH_TO_JSON_HOURS_FILE,
+                    "--" + MOVIES_FILE.toString() + "=" + PATH_TO_JSON_TEST_MOVIE_FILE,
+                    "--" + SCHEDULE_FILE.toString() + "=" + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE,
+                    "--" + SCHEDULE_FILE.toString() + "=" + PATH_TO_TEST_SCHEDULE_OUTPUT_FILE};
 }

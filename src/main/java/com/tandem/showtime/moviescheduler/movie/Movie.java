@@ -14,6 +14,9 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.tandem.showtime.moviescheduler.exceptions.MovieException;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public class Movie {
     private String title;
     private String rating;

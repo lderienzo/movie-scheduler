@@ -23,6 +23,7 @@ import com.tandem.showtime.moviescheduler.movie.Movie;
 import com.tandem.showtime.moviescheduler.movie.Showing;
 import com.tandem.showtime.moviescheduler.exceptions.SchedulePdfWriterException;
 
+// TODO: CLEAN UP!
 public class SchedulePdfWriter {
     private String error;
     private final Schedule weekdaySchedule;

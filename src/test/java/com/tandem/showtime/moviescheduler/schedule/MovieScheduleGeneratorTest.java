@@ -11,40 +11,58 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.ApplicationArguments;
 
-import com.tandem.showtime.moviescheduler.arguments.ArgsProcessor;
+import com.tandem.showtime.moviescheduler.arguments.ApplicationData;
+import com.tandem.showtime.moviescheduler.arguments.ApplicationDataLoader;
 import com.tandem.showtime.moviescheduler.hours.Hours;
 import com.tandem.showtime.moviescheduler.movie.Movies;
 
 
 @ExtendWith(MockitoExtension.class)
 public class MovieScheduleGeneratorTest {
-    private ArgsProcessor argsProcessor;
+
+    private ApplicationData appData;
     private ApplicationArguments givenMockArgs;
+    MovieScheduleGenerator scheduleGenerator;
+
 
     @Test
-    public void testDetermineMovieScheduleForWeekdayShows() {
+    public void testGenerateMovieScheduleForWeekdayShows() {
         // given
+        setUpDataForTest();
+        // when
+        generateMovieSchedules();
+        // then
+        checkValidityOfGeneratedSchedulesForWeekdayShows();
+    }
+
+    private void setUpDataForTest() {
         givenMockArgs = mock(ApplicationArguments.class);
         when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS);
-        when(givenMockArgs.containsOption(HOURS_FILE.toString())).thenReturn(true);
-        when(givenMockArgs.containsOption(MOVIES_FILE.toString())).thenReturn(true);
-        when(givenMockArgs.containsOption(SCHEDULE_FILE.toString())).thenReturn(true);
-        argsProcessor = new ArgsProcessor(givenMockArgs);
+        appData = ApplicationDataLoader.loadDataForArgs(givenMockArgs);
+    }
 
-        // then
-        Hours hours = argsProcessor.getHours();
+    private void generateMovieSchedules() {
+        hoursDataIsPresent();
+        moviesDataIsPresent();
+        scheduleGenerator = new MovieScheduleGenerator(appData.getHours(), appData.getMovies());
+        scheduleGenerator.generateSchedules();
+    }
+
+    private void hoursDataIsPresent() {
+        Hours hours = appData.getHours();
         assertThat(hours).isNotNull();
         assertThat(hours.weekday()).isNotNull();
         assertThat(hours.weekend()).isNotNull();
-        Movies movies = argsProcessor.getMovies();
+    }
+
+    private void moviesDataIsPresent() {
+        Movies movies = appData.getMovies();
         assertThat(movies).isNotNull();
         assertThat(movies.playing()).hasSize(2);
+    }
 
-        // then -- when
-        MovieScheduleGenerator movieScheduleGenerator = new MovieScheduleGenerator(hours, movies);
-        movieScheduleGenerator.generateSchedules();
-
-        Schedule schedule = movieScheduleGenerator.getWeekdaySchedule();
+    private void checkValidityOfGeneratedSchedulesForWeekdayShows() {
+        Schedule schedule = scheduleGenerator.getWeekdaySchedule();
         assertThat(schedule).isNotNull();
         assertThat(schedule.moviesPlaying()).hasSize(2);
         assertThat(schedule.moviesPlaying().get(0).weekdayShowings()).hasSize(5);
@@ -70,29 +88,17 @@ public class MovieScheduleGeneratorTest {
     }
 
     @Test
-    public void testDetermineMovieScheduleForWeekendShows() {
+    public void testGenerateMovieScheduleForWeekendShows() {
         // given
-        givenMockArgs = mock(ApplicationArguments.class);
-        when(givenMockArgs.getSourceArgs()).thenReturn(TEST_ARGS);
-        when(givenMockArgs.containsOption(HOURS_FILE.toString())).thenReturn(true);
-        when(givenMockArgs.containsOption(MOVIES_FILE.toString())).thenReturn(true);
-        when(givenMockArgs.containsOption(SCHEDULE_FILE.toString())).thenReturn(true);
-        argsProcessor = new ArgsProcessor(givenMockArgs);
-
+        setUpDataForTest();
+        // when
+        generateMovieSchedules();
         // then
-        Hours hours = argsProcessor.getHours();
-        assertThat(hours).isNotNull();
-        assertThat(hours.weekday()).isNotNull();
-        assertThat(hours.weekend()).isNotNull();
-        Movies movies = argsProcessor.getMovies();
-        assertThat(movies).isNotNull();
-        assertThat(movies.playing()).hasSize(2);
+        checkValidityOfGeneratedSchedulesForWeekdendShows();
+    }
 
-        // then when
-        MovieScheduleGenerator movieScheduleGenerator = new MovieScheduleGenerator(hours, movies);
-        movieScheduleGenerator.generateSchedules();
-
-        Schedule schedule = movieScheduleGenerator.getWeekendSchedule();
+    private void checkValidityOfGeneratedSchedulesForWeekdendShows() {
+        Schedule schedule = scheduleGenerator.getWeekendSchedule();
         assertThat(schedule).isNotNull();
         assertThat(schedule.moviesPlaying()).hasSize(2);
         assertThat(schedule.moviesPlaying().get(0).weekendShowings()).hasSize(6);

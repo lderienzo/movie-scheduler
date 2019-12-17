@@ -7,12 +7,10 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import com.tandem.showtime.moviescheduler.arguments.ArgsProcessor;
+import com.tandem.showtime.moviescheduler.arguments.*;
 import com.tandem.showtime.moviescheduler.hours.Hours;
 import com.tandem.showtime.moviescheduler.movie.Movies;
-import com.tandem.showtime.moviescheduler.schedule.MovieScheduleGenerator;
-import com.tandem.showtime.moviescheduler.schedule.Schedule;
-import com.tandem.showtime.moviescheduler.schedule.SchedulePdfWriter;
+import com.tandem.showtime.moviescheduler.schedule.*;
 
 
 @SpringBootApplication
@@ -30,13 +28,14 @@ public class Application implements ApplicationRunner {
 
 	@Override
 	public void run(ApplicationArguments args) {
-		ArgsProcessor argsProcessor = new ArgsProcessor(args);
-		Hours hours = argsProcessor.getHours();
-		Movies movies = argsProcessor.getMovies();
+		ApplicationData appData = ApplicationDataLoader.loadDataForArgs(args);
+		Hours hours = appData.getHours();
+		Movies movies = appData.getMovies();
 		MovieScheduleGenerator movieScheduleGenerator = new MovieScheduleGenerator(hours, movies);
 		movieScheduleGenerator.generateSchedules();
-		writeSchedulesToFile(argsProcessor.getOutFilePath(), movieScheduleGenerator.getWeekdaySchedule(),
-																movieScheduleGenerator.getWeekendSchedule());
+		writeSchedulesToFile(appData.getOutFilePath(),
+							 movieScheduleGenerator.getWeekdaySchedule(),
+							 movieScheduleGenerator.getWeekendSchedule());
 	}
 
 	private void writeSchedulesToFile(String outFilePath, Schedule weekdaySchedule, Schedule weekendSchedule) {
