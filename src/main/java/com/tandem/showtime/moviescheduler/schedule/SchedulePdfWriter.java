@@ -42,6 +42,7 @@ public class SchedulePdfWriter {
         this.weekendSchedule = weekendSchedule;
     }
 
+    // TODO -- CLEAN UP
     public void writeSchedules(String outFilePath) {
         Document schedule = createPdfSchedule();
         openPdfScheduleForWriting(schedule, outFilePath);

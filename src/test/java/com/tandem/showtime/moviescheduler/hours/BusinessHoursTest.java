@@ -6,8 +6,6 @@ import org.joda.time.LocalTime;
 import org.junit.jupiter.api.Test;
 
 
-import com.tandem.showtime.moviescheduler.hours.BusinessHours;
-
 public class BusinessHoursTest {
     private static final String WEEKDAY_DAYS = "Monday - Thursday";
     private static final String WEEKDAY_HOURS = "11am–11pm";

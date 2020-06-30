@@ -91,6 +91,7 @@ public class MovieScheduleGenerator {
         LOG.info("...end schedule generation.");
     }
 
+    // TODO - see if we can refactor this
     private Schedule determineMovieScheduleForShowings(LocalTime whenLastShowingCanEnd,
                                                        LocalTime startTimeForAllShowings,
                                                        LocalTime closingTime) {
